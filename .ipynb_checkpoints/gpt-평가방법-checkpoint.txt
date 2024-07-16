@@ -1,3 +1,0 @@
-python generator-openai-train.py/ python generator-openai-test.py
-python judgement-single.py -o 추론결과생성.jsonl -k open-api key -t 30
-python score-single.py -p 평가결과.jsonl
