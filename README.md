@@ -31,7 +31,7 @@ python judgement-single.py -o gpt-3.5-turbo-0125.jsonl -k open-api key -t 30
 python score-single.py -p 평가결과.jsonl
 ```
 
-### Streamlit
+### 4. Streamlit
 <p align="left" width="150%">
 <img src="assert/Streamlit_화면예시.png" alt="NLP Logo" style="width: 50%;">
 </p>
