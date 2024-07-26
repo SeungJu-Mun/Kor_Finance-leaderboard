@@ -33,5 +33,5 @@ python score-single.py -p 평가결과.jsonl
 
 ### 4. Streamlit
 <p align="left" width="150%">
-<img src="assert/Streamlit_화면예시.png" alt="NLP Logo" style="width: 50%;">
+<img src="assert/화면설계_예시.png" alt="NLP Logo" style="width: 50%;">
 </p>
