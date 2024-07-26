@@ -31,7 +31,7 @@ python judgement-single.py -o gpt-3.5-turbo-0125.jsonl -k open-api key -t 30
 python score-single.py -p 평가결과.jsonl
 ```
 
-### 4. Streamlit
+### 4. 리더보드 화면 
 <p align="left" width="150%">
 <img src="assert/화면설계_예시.png" alt="NLP Logo" style="width: 50%;">
 </p>
