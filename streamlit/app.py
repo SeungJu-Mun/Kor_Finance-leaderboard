@@ -162,23 +162,34 @@ def setup_about():
 
                                
     with tab3:
-        st.subheader('LLM 모델 벤치마크')
+        st.markdown('<h5> 👩‍✈️ 전남대 금융 LLM 리더보드 평가 규칙</h5>', unsafe_allow_html=True)
+        st.markdown('1️⃣ 점수 산출은 Public과 Private 점수의 평균으로 산출합니다.')
+        st.markdown('2️⃣ 원활한 서비스 개발을 위해서 Public 모델 제출은 하루 최대 3번까지 가능합니다.')
+        st.markdown('3️⃣ Private 점수의 경우, 대회 종료 5시간 전에 최종 미세조정 모델을 제출한 결과로 산정합니다.')
+        st.markdown('4️⃣ Model 평가는 gpt-4o를 기준으로 평가를 수행합니다.')
+        
         # DataFrame 생성
+        st.markdown('')
+        st.subheader('LLM 모델 벤치마크')
+        since = "2024-07-26 15:24"
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         df = pd.DataFrame({
-        '팀 이름': ['Jobtalks','전남대1','전남대2','전남대3'], 
-        'FIQUSA': [8.2,6.7,6.6,7.5],  # 여기서 콤마를 소수점으로 수정
-        'MMLU_F': [8.4,5.5,7.1,6.7], 
-        'MATHQA': [8.3,8.2,8.1,8.8], 
-        'Accuracy': [8.3,5.6,6.7,6.9],
-        '모델 제출일 시': [now,now,now,now]
-    }).reset_index(drop=True)
+        '팀 이름': ['Personaai','Persona_sLLM','전남대1','전남대2','전남대3'], 
+        'FIQUSA': [8.2,8.4,6.7,6.6,7.5],  # 여기서 콤마를 소수점으로 수정
+        'MMLU_F': [8.4,6.2,5.5,7.1,6.7], 
+        'MATHQA': [8.3,6.5,8.2,8.1,8.8], 
+        'Accuracy': [8.3,6.9,5.6,6.7,6.9],
+        '모델 제출일시': [now,since,now,now,now]
+    }).sort_values('Accuracy',ascending=False).reset_index(drop=True)
         st.dataframe(df,use_container_width=True)
 
 
 def main():
     setup_basic()
     setup_about()
+
+if __name__ == "__main__":
+    main()
 
 if __name__ == "__main__":
     main()
