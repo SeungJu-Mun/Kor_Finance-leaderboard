@@ -3,6 +3,8 @@ import pandas as pd
 import openai
 import os
 import datetime
+import base64
+import requests
 
 title = "🏆 Open-Ko-Finance-LLM-Leaderboard"
 st.set_page_config(
@@ -10,6 +12,22 @@ st.set_page_config(
     page_icon="🏆",
     layout="wide",
 )
+
+def upload_to_github(token, repo, path, content):
+    url = f"https://api.github.com/repos/{repo}/contents/{path}"
+    headers = {
+        "Authorization": f"token {token}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "message": "Add inference result",
+        "content": base64.b64encode(content.encode()).decode()
+    }
+    response = requests.put(url, headers=headers, json=data)
+    if response.status_code == 201:
+        st.success("추론 완료")
+    else:
+        st.error(f"추론 실패")
 
 def setup_basic():
     url = 'https://personaai.co.kr/main'
@@ -134,6 +152,7 @@ def setup_about():
                         ("🟢 gpt-3.5-turbo", "⭕ gpt-4-o-mini")
                     )
 
+
             if st.form_submit_button('추론 시작하기!'):
                 with st.spinner():
                     df_questions = pd.read_json('FinBench_train.jsonl', lines=True)
@@ -161,6 +180,7 @@ def setup_about():
                     json_output = df_output.to_json(orient='records', lines=True, force_ascii=False)
                     st.session_state['json_output'] = json_output
                     st.session_state['selected_option_name'] = selected_option_name
+                    upload_to_github("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", "CPM-AI/Kor_Finance-leaderboard", f"./추론결과/{st.session_state['selected_option_name'].replace('/', '_')}.json", json_output)
 
         if 'json_output' in st.session_state:
             st.download_button(
@@ -169,6 +189,8 @@ def setup_about():
                 file_name=f"{st.session_state['selected_option_name'].replace('/', '_')}.jsonl",
                 mime='text/json'
             )
+        
+        
 
     with tab3:
         st.markdown('<h5> 👩‍✈️ 전남대 금융 LLM 리더보드 평가 규칙</h5>', unsafe_allow_html=True)
