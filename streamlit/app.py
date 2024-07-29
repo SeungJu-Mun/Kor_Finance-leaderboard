@@ -5,7 +5,6 @@ import os
 import datetime
 import base64
 import requests
-from dotenv import load_dotenv
 
 title = "🏆 Open-Ko-Finance-LLM-Leaderboard"
 st.set_page_config(
