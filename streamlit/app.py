@@ -180,7 +180,7 @@ def setup_about():
                     json_output = df_output.to_json(orient='records', lines=True, force_ascii=False)
                     st.session_state['json_output'] = json_output
                     st.session_state['selected_option_name'] = selected_option_name
-                    upload_to_github("깃헙 토큰 입력", "CPM-AI/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.json", json_output)
+                    upload_to_github(GITHUB_TOKEN, "CPM-AI/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.json", json_output)
 
         if 'json_output' in st.session_state:
             st.download_button(
