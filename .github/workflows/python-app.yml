@@ -22,11 +22,12 @@ jobs:
           echo "SECRET_TOKEN=${{ secrets.SECRET_TOKEN }}" >> .env
         env:
           SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
-      
+
       - name: Install dependencies
         run: pip install -r requirements.txt
-        
-      - name: Run Python script
-        run: python streamlit/app.py
+
+      - name: Run Streamlit app
+        run: streamlit run streamlit/app.py
         env:
           SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
+
