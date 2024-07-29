@@ -13,7 +13,7 @@ st.set_page_config(
     layout="wide",
 )
 
-GITHUB_TOKEN = os.getenv('SECRET_TOKEN')
+GITHUB_TOKEN = st.secrets('SECRET_TOKEN')
 
 def upload_to_github(token, repo, path, content):
     url = f"https://api.github.com/repos/{repo}/contents/{path}"
