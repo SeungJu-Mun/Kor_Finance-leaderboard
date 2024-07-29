@@ -11,8 +11,8 @@ permissions:
 
 jobs:
   release-ios:
-    name: Build and release iOS app
-    runs-on: macos-latest
+    name: Build Streamlit
+    runs-on: Streamlit app
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
