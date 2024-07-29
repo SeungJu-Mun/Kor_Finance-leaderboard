@@ -1,5 +1,0 @@
-- name: Create .env file
-      run: 
-        echo TOKEN=${{ secrets.TOKEN }} >> .env
-
-
