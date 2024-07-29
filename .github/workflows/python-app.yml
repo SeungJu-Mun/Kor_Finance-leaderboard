@@ -24,6 +24,6 @@ jobs:
           SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
 
       - name: Run Python script
-        run: python app.py
+        run: python streamlit/app.py
         env:
           SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
