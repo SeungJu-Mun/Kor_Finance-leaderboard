@@ -1,2 +1,14 @@
+name : Test
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on : ubuntu-latest
 
+  steps:
+    -name : Acess Secrets
+    run :
+      echo "Secrets : ${{secrets.TOKEN}}"
 
