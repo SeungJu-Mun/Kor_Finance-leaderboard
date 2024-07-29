@@ -12,6 +12,7 @@ st.set_page_config(
     page_icon="🏆",
     layout="wide",
 )
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 
 def upload_to_github(token, repo, path, content):
     url = f"https://api.github.com/repos/{repo}/contents/{path}"
