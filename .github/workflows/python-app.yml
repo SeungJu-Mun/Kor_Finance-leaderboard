@@ -27,7 +27,9 @@ jobs:
       env:
         SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
     
-    # Add steps for installing dependencies, running tests, and linting here
+    - name: Check .env file
+      run: cat .env
+    
     - name: Install dependencies
       run: python -m pip install --upgrade pip
     - name: Install requirements
