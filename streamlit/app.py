@@ -108,8 +108,7 @@ def setup_about():
         st.markdown('• 추론이 끝나면 아래 다운로드 버튼을 클릭하여, 저장된 Jsonl 파일을 아래 이메일로 보내주시면, 리더보드에 결과가 반영이 됩니다.')
         st.markdown('모델 제출 이메일 : anstmdwn45@personaai.co.kr')
         
-        leader = st.form(key='form')
-        with leader:
+        with st.form(key='form'):
             st.subheader('📋 인퍼런스 결과 생성')
 
             # 텍스트 입력 상자
