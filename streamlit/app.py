@@ -217,4 +217,6 @@ def setup_about():
 def main():
     setup_basic()
     setup_about()
-
+    
+if __name__ == "__main__":
+    main()
