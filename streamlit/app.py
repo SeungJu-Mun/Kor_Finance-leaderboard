@@ -11,6 +11,7 @@ import argparse
 import time
 import datetime
 
+title = "🏆 Open-Ko-Finance-LLM-Leaderboard"
 st.set_page_config(
         page_title=title,
         page_icon="🏆",
@@ -18,7 +19,6 @@ st.set_page_config(
     )
 
 def setup_basic():
-    title = "🏆 Open-Ko-Finance-LLM-Leaderboard"
     url = 'https://personaai.co.kr/main'
     st.title(title)
 
