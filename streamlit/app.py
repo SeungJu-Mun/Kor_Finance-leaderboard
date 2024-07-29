@@ -11,15 +11,15 @@ import argparse
 import time
 import datetime
 
-def setup_basic():
-    title = "🏆 Open-Ko-Finance-LLM-Leaderboard"
-    url = 'https://personaai.co.kr/main'
-
-    st.set_page_config(
+st.set_page_config(
         page_title=title,
         page_icon="🏆",
         layout="wide",
     )
+
+def setup_basic():
+    title = "🏆 Open-Ko-Finance-LLM-Leaderboard"
+    url = 'https://personaai.co.kr/main'
     st.title(title)
 
     st.markdown(
