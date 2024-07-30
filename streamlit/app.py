@@ -16,7 +16,7 @@ api_key = st.secrets['TOKEN']
 
 st.write(
     "Has environment variables been set:",
-    os.environ["db_username"] == st.secrets["db_username"],
+    os.environ["TOKEN"] == st.secrets["TOKEN"],
 )
 
 def upload_to_github(token, repo, path, content):
