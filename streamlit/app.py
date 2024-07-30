@@ -12,7 +12,9 @@ st.set_page_config(
     page_icon="🏆",
     layout="wide",
 )
-api_key = os.environ(st.secrets['TOKEN'])
+
+# 환경변수에서 토큰 가져오기
+api_key = st.secrets['TOKEN']
 st.write(api_key)
 
 def upload_to_github(token, repo, path, content):
