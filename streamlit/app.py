@@ -44,7 +44,6 @@ def upload_to_github(token, repo, path, content):
     # 파일을 업데이트하기 위해 PUT 요청을 보냅니다.
     response = requests.put(url, headers=headers, json=data)
     if response.status_code == 201:
-        st.success("추론 완료")
     elif response.status_code == 200:
         st.success("파일이 성공적으로 업데이트되었습니다")
     else:
@@ -208,7 +207,7 @@ def setup_about():
                                     # GitHub에 업로드하는 부분 (이전 코드에서 유지)
                                     upload_to_github(github_token, "NUMCHCOMCH/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.json", json_output)
         
-                                    st.success("추론이 완료되었습니다.")
+                                    st.success("추론이 성공적으로 완료되었습니다.")
                                 except Exception as e:
                                     st.error(f"추론 중 오류가 발생했습니다: {str(e)}")
 
