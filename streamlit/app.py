@@ -44,6 +44,7 @@ def upload_to_github(token, repo, path, content):
     # 파일을 업데이트하기 위해 PUT 요청을 보냅니다.
     response = requests.put(url, headers=headers, json=data)
     if response.status_code == 201:
+        pass
     elif response.status_code == 200:
         st.success("파일이 성공적으로 업데이트되었습니다")
     else:
