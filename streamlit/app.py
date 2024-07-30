@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import openai
+from openai import OpenAI
 import os
 import datetime
 import base64
@@ -13,9 +13,12 @@ st.set_page_config(
     layout="wide",
 )
 
-# 환경변수에서 토큰 가져오기
-api_key = str(st.secrets['TOKEN'])
-st.write(api_key)
+# Load the API key from Streamlit secrets
+try:
+    github_token = st.secrets['GITHUB_TOKEN']
+except KeyError:
+    st.error("GITHUB_TOKEN 환경 변수가 설정되지 않았습니다. 'Manage app'에서 환경 변수를 설정하세요.")
+
 
 def upload_to_github(token, repo, path, content):
     url = f"https://api.github.com/repos/{repo}/contents/{path}"
@@ -23,24 +26,37 @@ def upload_to_github(token, repo, path, content):
         "Authorization": f"token {token}",
         "Content-Type": "application/json"
     }
+    
+    # 먼저 파일의 sha 값을 가져오기 위해 GET 요청을 보냅니다.
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        sha = response.json().get('sha')
+    else:
+        sha = None
+
     data = {
         "message": "Add inference result",
         "content": base64.b64encode(content.encode()).decode()
     }
+    if sha:
+        data["sha"] = sha
+
+    # 파일을 업데이트하기 위해 PUT 요청을 보냅니다.
     response = requests.put(url, headers=headers, json=data)
     if response.status_code == 201:
         st.success("추론 완료")
+    elif response.status_code == 200:
+        st.success("파일이 성공적으로 업데이트되었습니다")
     else:
-        st.error(f"추론 실패")
+        st.error(f"추론 실패: {response.status_code} - {response.json().get('message', 'Unknown error')}")
+        st.error(response.json())  # 추가적으로 전체 응답 내용을 출력하여 디버깅에 도움
 
 def setup_basic():
-    url = 'https://personaai.co.kr/main'
     st.title(title)
-
     st.markdown(
         "🚀 Open-Ko-Finance-LLM 리더보드는 한국어 금융 분야의 전문적인 지식을 대형 언어 모델로 객관적인 평가를 수행합니다.\n"
     )
-    st.markdown( f" 이 리더보드는 [PersonaAI](https://personaai.co.kr/main)와 [전남대학교](https://aicoss.kr/www/)가 공동 주최하며, [PersonaAI](https://personaai.co.kr/main)에서 운영합니다.")
+    st.markdown(f" 이 리더보드는 [PersonaAI](https://personaai.co.kr/main)와 [전남대학교](https://aicoss.kr/www/)가 공동 주최하며, [PersonaAI](https://personaai.co.kr/main)에서 운영합니다.")
 
 def setup_about():
     css = '''
@@ -60,7 +76,6 @@ def setup_about():
     }
     </style>
     '''
-
     st.markdown(css, unsafe_allow_html=True)
 
     tab1, tab2, tab3 = st.tabs(["📖 About", "🚀Submit here!", "🏅 LLM BenchMark"])
@@ -94,6 +109,7 @@ def setup_about():
         import openai
         import os
 
+        # OpenAI 클라이언트 초기화
         client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "API_KEY 입력"))
 
         # 학습 데이터 업로드
@@ -126,16 +142,16 @@ def setup_about():
         with st.form(key='inference_form_1'):  # 고유한 키 부여
             st.subheader('📋 인퍼런스 결과 생성')
 
-            # 텍스트 입력 상자
+        # 텍스트 입력 상자
             col1, col2 = st.columns([0.54, 0.46])
-            
+        
             with col1:
                 with st.expander('Expander 1'):
                     selected_option = st.text_input(
                         "모델 이름을 입력하세요.", 
                         placeholder='여기에 입력해주세요',
                         help='모델명 예시 ft:gpt-모델명:personal:파인튜닝 모델명'
-                    )
+                    )    
                     api_key = st.text_input(
                         label='OpenAPI Key를 입력하세요.', 
                         max_chars=100, 
@@ -143,7 +159,6 @@ def setup_about():
                         placeholder='여기에 입력해주세요',
                         help='sk-xxxxxxxxxxxxxx'
                     )
-                    client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
 
             with col2:
                 with st.expander('Expander 2'):
@@ -153,49 +168,58 @@ def setup_about():
                     )
                     selected_option_type = st.selectbox(
                         "모델 타입을 입력하세요.",
-                        ("🟢 gpt-3.5-turbo", "⭕ gpt-4-o-mini")
-                    )
-
+                        ("🟢 gpt-3.5-turbo", "⭕ gpt-4o-mini")
+                )
 
             if st.form_submit_button('추론 시작하기!'):
-                with st.spinner():
-                    df_questions = pd.read_json('FinBench_train.jsonl', lines=True)
-                    single_turn_outputs = []
-                    for question in df_questions['questions']:
-                        messages = [
-                            {"role": "system", "content": 'You are an AI assistant. You will be given a task. You must generate a detailed and long answer.'},
-                            {"role": "user", "content": str(question)}
-                        ]
-                        response = client.chat.completions.create(
-                            model=selected_option,
-                            messages=messages,
-                            max_tokens=4096
-                        )
-                        single_turn_outputs.append(response.choices[0].message.content)
-
-                    df_output = pd.DataFrame({
-                        'id': df_questions['id'],
-                        'category': df_questions['category'],
-                        'questions': df_questions['questions'],
-                        'outputs': single_turn_outputs,
-                        'references': df_questions['references']
-                    })
-
-                    json_output = df_output.to_json(orient='records', lines=True, force_ascii=False)
-                    st.session_state['json_output'] = json_output
-                    st.session_state['selected_option_name'] = selected_option_name
-                    upload_to_github(api_key, "CPM-AI/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.json", json_output)
-
-        if 'json_output' in st.session_state:
-            st.download_button(
-                label='추론 결과 다운로드 하기',
-                data=st.session_state['json_output'],
-                file_name=f"{st.session_state['selected_option_name'].replace('/', '_')}.jsonl",
-                mime='text/json'
-            )
+                        if not api_key:
+                            st.error("OpenAI API 키를 입력해주세요.")
+                        else:
+                            with st.spinner('추론 중...'):
+                                try:
+                                    # OpenAI 클라이언트 초기화
+                                    client = OpenAI(api_key=api_key)
+                                    df_questions = pd.read_json('FinBench_train.jsonl', lines=True)
+                                    single_turn_outputs = []
+                                    for question in df_questions['questions']:
+                                        messages = [
+                                            {"role": "system", "content": 'You are an AI assistant. You will be given a task. You must generate a detailed and long answer.'},
+                                            {"role": "user", "content": str(question)}
+                                    ]
+                                        response = client.chat.completions.create(
+                                            model=selected_option_type.split()[1],  # "🟢 gpt-3.5-turbo" 에서 "gpt-3.5-turbo" 추출
+                                            messages=messages,
+                                            max_tokens=4096
+                                        )
+                                        single_turn_outputs.append(response.choices[0].message.content.strip())
         
+                                    df_output = pd.DataFrame({
+                                        'id': df_questions['id'],
+                                        'category': df_questions['category'],
+                                        'questions': df_questions['questions'],
+                                        'outputs': single_turn_outputs,
+                                        'references': df_questions['references']
+                                    })
         
+                                    json_output = df_output.to_json(orient='records', lines=True, force_ascii=False)
+                                    st.session_state['json_output'] = json_output
+                                    st.session_state['selected_option_name'] = selected_option_name
+                                
+                                    # GitHub에 업로드하는 부분 (이전 코드에서 유지)
+                                    upload_to_github(github_token, "CPM-AI/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.json", json_output)
+        
+                                    st.success("추론이 완료되었습니다.")
+                                except Exception as e:
+                                    st.error(f"추론 중 오류가 발생했습니다: {str(e)}")
 
+    if 'json_output' in st.session_state:
+        st.download_button(
+            label='추론 결과 다운로드 하기',
+            data=st.session_state['json_output'],
+            file_name=f"{st.session_state['selected_option_name'].replace('/', '_')}.jsonl",
+            mime='text/json'
+        )
+        
     with tab3:
         st.markdown('<h5> 👩‍✈️ 전남대 금융 LLM 리더보드 평가 규칙</h5>', unsafe_allow_html=True)
         st.markdown('1️⃣ 점수 산출은 Public과 Private 점수의 평균으로 산출합니다.')
