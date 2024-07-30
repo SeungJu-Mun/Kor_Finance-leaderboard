@@ -13,6 +13,7 @@ st.set_page_config(
     layout="wide",
 )
 api_key = st.secrets['TOKEN']
+st.write(type(api_key)
 st.write(api_key)
 
 def upload_to_github(token, repo, path, content):
