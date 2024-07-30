@@ -16,11 +16,6 @@ st.set_page_config(
 # 환경변수에서 토큰 가져오기
 api_key = st.secrets['TOKEN']
 
-# 직접 입력한 값과 환경변수 값을 비교
-direct_key = "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"
-st.write(f"Direct Key: {direct_key}")
-st.write(f"Are keys equal? {api_key == direct_key}")
-
 def upload_to_github(token, repo, path, content):
     url = f"https://api.github.com/repos/{repo}/contents/{path}"
     headers = {
