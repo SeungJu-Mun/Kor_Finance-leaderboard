@@ -14,7 +14,8 @@ st.set_page_config(
 )
 
 # 환경변수에서 토큰 가져오기
-api_key = st.secrets['TOKEN']
+api_key = str(st.secrets['TOKEN'])
+st.write(api_key)
 
 def upload_to_github(token, repo, path, content):
     url = f"https://api.github.com/repos/{repo}/contents/{path}"
