@@ -14,6 +14,11 @@ st.set_page_config(
 )
 api_key = st.secrets['TOKEN']
 
+st.write(
+    "Has environment variables been set:",
+    os.environ["db_username"] == st.secrets["db_username"],
+)
+
 def upload_to_github(token, repo, path, content):
     url = f"https://api.github.com/repos/{repo}/contents/{path}"
     headers = {
