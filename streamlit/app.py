@@ -206,7 +206,7 @@ def setup_about():
                                     st.session_state['selected_option_name'] = selected_option_name
                                 
                                     # GitHub에 업로드하는 부분 (이전 코드에서 유지)
-                                    upload_to_github(github_token, "CPM-AI/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.json", json_output)
+                                    upload_to_github(github_token, "NUMCHCOMCH/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.json", json_output)
         
                                     st.success("추론이 완료되었습니다.")
                                 except Exception as e:
