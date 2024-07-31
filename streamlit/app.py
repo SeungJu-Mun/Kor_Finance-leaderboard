@@ -113,8 +113,6 @@ def setup_about():
 # 1. 필요 개발환경 설치 (Colab, Jupyter)
 !pip install openai
 
-'''
-        code2 = '''
 # 2. 필요한 라이브러리 업로드
 import openai
 import os
@@ -161,7 +159,6 @@ def gpt_finetuning():
         st.markdown('<h3>Evaluation Queue for the 🚀 Open Ko-LLM Leaderboard</h3>', unsafe_allow_html=True)
         st.markdown('1️⃣ ChatGPT를 활용하여 미세 조정을 수행하는 방법')
         st.code(code, language='python')
-        st.code(code2, language='python')
         st.markdown('2️⃣ 만약에 데이터 및 모델을 업로드 하였는데, 오류가 발생한다면 다음 사항을 고려해보세요')
         st.markdown('⚠️ gpt model을 파인튜닝 하기위해서는 위에서 정의한 Chat-Completion 데이터 형식을 유지해야합니다.❗')
         st.markdown('⚠️ Fine Tuning을 한 모델 계정의 API를 입력해야 합니다. 그러지 않을경우 제대로 된 평가를 진행할 수 없습니다.❗')
