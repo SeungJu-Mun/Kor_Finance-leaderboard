@@ -6,8 +6,6 @@ import datetime
 import base64
 import requests
 import json
-import jsonlines
-import json
 import glob
 
 title = "🏆 Open-Ko-Finance-LLM-Leaderboard"
