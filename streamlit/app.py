@@ -112,7 +112,6 @@ def setup_about():
         code = '''
 # 1. 필요 개발환경 설치 (Colab, Jupyter)
 !pip install openai
-
 '''
         code2 = '''
 # 2. 필요한 라이브러리 업로드
