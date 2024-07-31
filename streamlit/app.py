@@ -1,10 +1,14 @@
 import streamlit as st
 import pandas as pd
-from openai import OpenAI
+import openai
 import os
 import datetime
 import base64
 import requests
+import json
+import jsonlines
+import json
+import glob
 
 title = "🏆 Open-Ko-Finance-LLM-Leaderboard"
 st.set_page_config(
@@ -18,7 +22,6 @@ try:
     github_token = st.secrets['GITHUB_TOKEN']
 except KeyError:
     st.error("GITHUB_TOKEN 환경 변수가 설정되지 않았습니다. 'Manage app'에서 환경 변수를 설정하세요.")
-
 
 def upload_to_github(token, repo, path, content):
     url = f"https://api.github.com/repos/{repo}/contents/{path}"
@@ -44,7 +47,7 @@ def upload_to_github(token, repo, path, content):
     # 파일을 업데이트하기 위해 PUT 요청을 보냅니다.
     response = requests.put(url, headers=headers, json=data)
     if response.status_code == 201:
-        pass
+        st.success("추론 완료")
     elif response.status_code == 200:
         st.success("파일이 성공적으로 업데이트되었습니다")
     else:
@@ -52,11 +55,13 @@ def upload_to_github(token, repo, path, content):
         st.error(response.json())  # 추가적으로 전체 응답 내용을 출력하여 디버깅에 도움
 
 def setup_basic():
+    url = 'https://personaai.co.kr/main'
     st.title(title)
+
     st.markdown(
         "🚀 Open-Ko-Finance-LLM 리더보드는 한국어 금융 분야의 전문적인 지식을 대형 언어 모델로 객관적인 평가를 수행합니다.\n"
     )
-    st.markdown(f" 이 리더보드는 [PersonaAI](https://personaai.co.kr/main)와 [전남대학교](https://aicoss.kr/www/)가 공동 주최하며, [PersonaAI](https://personaai.co.kr/main)에서 운영합니다.")
+    st.markdown( f" 이 리더보드는 [PersonaAI](https://personaai.co.kr/main)와 [전남대학교](https://aicoss.kr/www/)가 공동 주최하며, [PersonaAI](https://personaai.co.kr/main)에서 운영합니다.")
 
 def setup_about():
     css = '''
@@ -76,6 +81,7 @@ def setup_about():
     }
     </style>
     '''
+
     st.markdown(css, unsafe_allow_html=True)
 
     tab1, tab2, tab3 = st.tabs(["📖 About", "🚀Submit here!", "🏅 LLM BenchMark"])
@@ -109,7 +115,6 @@ def setup_about():
         import openai
         import os
 
-        # OpenAI 클라이언트 초기화
         client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "API_KEY 입력"))
 
         # 학습 데이터 업로드
@@ -142,16 +147,16 @@ def setup_about():
         with st.form(key='inference_form_1'):  # 고유한 키 부여
             st.subheader('📋 인퍼런스 결과 생성')
 
-        # 텍스트 입력 상자
+            # 텍스트 입력 상자
             col1, col2 = st.columns([0.54, 0.46])
-        
+            
             with col1:
                 with st.expander('Expander 1'):
                     selected_option = st.text_input(
                         "모델 이름을 입력하세요.", 
                         placeholder='여기에 입력해주세요',
                         help='모델명 예시 ft:gpt-모델명:personal:파인튜닝 모델명'
-                    )    
+                    )
                     api_key = st.text_input(
                         label='OpenAPI Key를 입력하세요.', 
                         max_chars=100, 
@@ -159,6 +164,7 @@ def setup_about():
                         placeholder='여기에 입력해주세요',
                         help='sk-xxxxxxxxxxxxxx'
                     )
+                    client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
 
             with col2:
                 with st.expander('Expander 2'):
@@ -168,58 +174,49 @@ def setup_about():
                     )
                     selected_option_type = st.selectbox(
                         "모델 타입을 입력하세요.",
-                        ("🟢 gpt-3.5-turbo", "⭕ gpt-4o-mini")
-                )
+                        ("🟢 gpt-3.5-turbo", "⭕ gpt-4-o-mini")
+                    )
+
 
             if st.form_submit_button('추론 시작하기!'):
-                        if not api_key:
-                            st.error("OpenAI API 키를 입력해주세요.")
-                        else:
-                            with st.spinner('추론 중...'):
-                                try:
-                                    # OpenAI 클라이언트 초기화
-                                    client = OpenAI(api_key=api_key)
-                                    df_questions = pd.read_json('FinBench_train.jsonl', lines=True)
-                                    single_turn_outputs = []
-                                    for question in df_questions['questions']:
-                                        messages = [
-                                            {"role": "system", "content": 'You are an AI assistant. You will be given a task. You must generate a detailed and long answer.'},
-                                            {"role": "user", "content": str(question)}
-                                    ]
-                                        response = client.chat.completions.create(
-                                            model=selected_option_type.split()[1],  # "🟢 gpt-3.5-turbo" 에서 "gpt-3.5-turbo" 추출
-                                            messages=messages,
-                                            max_tokens=4096
-                                        )
-                                        single_turn_outputs.append(response.choices[0].message.content.strip())
-        
-                                    df_output = pd.DataFrame({
-                                        'id': df_questions['id'],
-                                        'category': df_questions['category'],
-                                        'questions': df_questions['questions'],
-                                        'outputs': single_turn_outputs,
-                                        'references': df_questions['references']
-                                    })
-        
-                                    json_output = df_output.to_json(orient='records', lines=True, force_ascii=False)
-                                    st.session_state['json_output'] = json_output
-                                    st.session_state['selected_option_name'] = selected_option_name
-                                
-                                    # GitHub에 업로드하는 부분 (이전 코드에서 유지)
-                                    upload_to_github(github_token, "NUMCHCOMCH/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.json", json_output)
-        
-                                    st.success("추론이 성공적으로 완료되었습니다.")
-                                except Exception as e:
-                                    st.error(f"추론 중 오류가 발생했습니다: {str(e)}")
+                with st.spinner():
+                    df_questions = pd.read_json('FinBench_train.jsonl', lines=True)
+                    single_turn_outputs = []
+                    for question in df_questions['questions']:
+                        messages = [
+                            {"role": "system", "content": 'You are an AI assistant. You will be given a task. You must generate a detailed and long answer.'},
+                            {"role": "user", "content": str(question)}
+                        ]
+                        response = client.chat.completions.create(
+                            model=selected_option,
+                            messages=messages,
+                            max_tokens=4096
+                        )
+                        single_turn_outputs.append(response.choices[0].message.content)
 
-    if 'json_output' in st.session_state:
-        st.download_button(
-            label='추론 결과 다운로드 하기',
-            data=st.session_state['json_output'],
-            file_name=f"{st.session_state['selected_option_name'].replace('/', '_')}.jsonl",
-            mime='text/json'
-        )
+                    df_output = pd.DataFrame({
+                        'id': df_questions['id'],
+                        'category': df_questions['category'],
+                        'questions': df_questions['questions'],
+                        'outputs': single_turn_outputs,
+                        'references': df_questions['references']
+                    })
+
+                    json_output = df_output.to_json(orient='records', lines=True, force_ascii=False)
+                    st.session_state['json_output'] = json_output
+                    st.session_state['selected_option_name'] = selected_option_name
+                    upload_to_github(github_token, "NUMCHCOMCH/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.json", json_output)
+
+        if 'json_output' in st.session_state:
+            st.download_button(
+                label='추론 결과 다운로드 하기',
+                data=st.session_state['json_output'],
+                file_name=f"{st.session_state['selected_option_name'].replace('/', '_')}.jsonl",
+                mime='text/json'
+            )
+         
         
+
     with tab3:
         st.markdown('<h5> 👩‍✈️ 전남대 금융 LLM 리더보드 평가 규칙</h5>', unsafe_allow_html=True)
         st.markdown('1️⃣ 점수 산출은 Public과 Private 점수의 평균으로 산출합니다.')
@@ -230,17 +227,48 @@ def setup_about():
         # DataFrame 생성
         st.markdown('')
         st.subheader('LLM 모델 벤치마크')
-        since = "2024-07-26 15:24"
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-        df = pd.DataFrame({
-            '팀 이름': ['Personaai','Persona_sLLM','전남대1','전남대2','전남대3'], 
-            'FIQUSA': [8.2,8.4,6.7,6.6,7.5],
-            'MMLU_F': [8.4,6.2,5.5,7.1,6.7], 
-            'MATHQA': [8.3,6.5,8.2,8.1,8.8], 
-            'Accuracy': [8.3,6.9,5.6,6.7,6.9],
-            '모델 제출일시': [now,since,now,now,now]
-        }).sort_values('Accuracy', ascending=False).reset_index(drop=True)
-        st.dataframe(df, use_container_width=True)
+        
+        # 카테고리별 점수 집계를 위한 딕셔너리
+        category_scores = {}
+
+        # 전체 싱글 점수와 멀티 점수의 리스트
+        total_single_scores = []
+
+        file_path = '전남대-2.jsonl'
+        file_path2 = '전남대-1.jsonl'
+
+        # 지정된 패턴에 맞는 모든 파일을 찾아서 처리
+        def process_file_to_dataframe(file_path):
+            category_scores = {} 
+            with open(file_path, 'r', encoding='utf-8-sig') as file:  # 'utf-8-sig'로 인코딩 변경
+                for line in file:
+                    item = json.loads(line)
+                    category = item['category']
+                    single_score = item['query_single']['judge_score']
+        
+                    if category not in category_scores:
+                        category_scores[category] = []
+                
+                    category_scores[category].append(single_score)
+
+            # 카테고리별 평균 점수를 계산하여 데이터프레임 생성
+            avg_scores = {category: (sum(scores) / len(scores)) if scores else 0 for category, scores in category_scores.items()}
+    
+            # 데이터프레임 생성
+            df = pd.DataFrame([avg_scores])
+            df['팀이름'] = os.path.splitext(os.path.basename(file_path))[0]
+            df['AVG_Score'] = (df['MMLU_F'] + df['FIQUSA'] + df['MATHQA'])/3
+
+            return df
+        
+        # 소수점 한 자리로 설정
+        pd.options.display.float_format = "{:.1f}".format
+        df = process_file_to_dataframe(file_path)
+        df_2 = process_file_to_dataframe(file_path2)
+        df = pd.concat([df,df_2]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+        df['모델 제출일시'] = now = datetime.datetime.now().strftime("%Y-%m-%d %H") + ':00'
+        df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
+        st.dataframe(df,use_container_width=True)
 
 def main():
     setup_basic()
