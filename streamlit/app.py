@@ -110,52 +110,50 @@ def setup_about():
 
     with tab2:
         code = '''
-# 1. 필요 개발환경 설치 (Colab, Jupyter)
-!pip install openai
-'''
+	# 1. 필요 개발환경 설치 (Colab, Jupyter)
+	!pip install openai
         code2 = '''
-# 2. 필요한 라이브러리 업로드
-import openai
-import os
-import pandas as pd
-import json
+	# 2. 필요한 라이브러리 업로드
+	import openai
+	import os
+	import pandas as pd
+	import json
 
-# 3. 환경변수 설정 (gpt-api key 설정)
-client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "API_KEY 입력"))
+	# 3. 환경변수 설정 (gpt-api key 설정)
+	client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "API_KEY 입력"))
 
-# 4. 학습 데이터 전처리
-df = pd.read_csv('파일명.csv') # 데이터 불러오기
+	# 4. 학습 데이터 전처리
+	df = pd.read_csv('파일명.csv') # 데이터 불러오기
 
-# system, user, assistant에 대한 데이터를 준비하여 학습 데이터 구성(Chat-Completion 형식)
-def prepare_example_conversation(row):
-    system_message = "You are a helpful AI assistant. Please answer the user's questions kindly. 당신은 유능한 AI 어시스턴트 입니다. 사용자의 질문에 대해 친절하게 답변해주세요."
-    messages = []
-    messages.append({"role": "system", "content": system_message})
-    messages.append({"role": "user", "content": row['질문 데이터']})
-    messages.append({"role": "assistant", "content": row["답변 데이터"]})
-    return {"messages": messages}
+	# system, user, assistant에 대한 데이터를 준비하여 학습 데이터 구성(Chat-Completion 형식)
+	def prepare_example_conversation(row):
+    		system_message = "You are a helpful AI assistant. Please answer the user's questions kindly. 당신은 유능한 AI 어시스턴트 입니다. 사용자의 질문에 대해 친절하게 답변해주세요."
+    		messages = []
+    		messages.append({"role": "system", "content": system_message})
+   		messages.append({"role": "user", "content": row['질문 데이터']})
+   		 messages.append({"role": "assistant", "content": row["답변 데이터"]})
+    		return {"messages": messages}
 
-training_data = training_df.apply(prepare_example_conversation, axis=1).tolist()
+	training_data = training_df.apply(prepare_example_conversation, axis=1).tolist()
 
-# 5. openai playground 학습 데이터 업로드
-def data_loader(train_file):
-    with open(train_file, 'rb') as train_ft:
-        training_response = client.files.create(file = train_ft, purpose='fine-tune')
-        train_file_id = training_response.id
-
-data_loader(training_data)
+	# 5. openai playground 학습 데이터 업로드
+	def data_loader(train_file):
+    		with open(train_file, 'rb') as train_ft:
+        		training_response = client.files.create(file = train_ft, purpose='fine-tune')
+        		train_file_id = training_response.id
+	data_loader(training_data)
         
-# 6. gpt-3.5-turbo 미세조정
-def gpt_finetuning():
-    response = client.fine_tuning.jobs.create(
-        training_file=training_file_id,
-        model="모델명", # gpt-4-o-mini, gpt-3.5-turbo
-        suffix="Finance_팀이름",
-        hyperparameters={
-            "n_epochs": 3, # 데이터 반복 횟수 / 주로 3~5로 설정
-	    "batch_size": 3, # 한 번의 학습에 처리 할 데이터 수
-	    "learning_rate_multiplier": 0.3 # 모델의 학습률 : 경사하강법을 통해, 모델이 손실함수를 최소화 할 수 있는 방향을 설정
-        })
+	# 6. gpt-3.5-turbo 미세조정
+	def gpt_finetuning():
+    	response = client.fine_tuning.jobs.create(
+        	training_file=training_file_id,
+        	model="모델명", # gpt-4-o-mini, gpt-3.5-turbo
+        	suffix="Finance_팀이름",
+        	hyperparameters={
+            		"n_epochs": 3, # 데이터 반복 횟수 / 주로 3~5로 설정
+	    		"batch_size": 3, # 한 번의 학습에 처리 할 데이터 수
+	    		"learning_rate_multiplier": 0.3 # 모델의 학습률 : 경사하강법을 통해, 모델이 손실함수를 최소화 할 수 있는 방향을 설정
+        	})
         '''
         st.markdown('<h3>Evaluation Queue for the 🚀 Open Ko-LLM Leaderboard</h3>', unsafe_allow_html=True)
         st.markdown('1️⃣ ChatGPT를 활용하여 미세 조정을 수행하는 방법')
