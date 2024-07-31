@@ -231,9 +231,9 @@ def setup_about():
 
         # 전체 싱글 점수와 멀티 점수의 리스트
         total_single_scores = []
-
-        file_path = '전남대-2.jsonl'
-        file_path2 = '전남대-1.jsonl'
+        
+        file_path = './streamlit/전남대-2.jsonl'
+        file_path2 = './streamlit/전남대-1.jsonl'
 
         # 지정된 패턴에 맞는 모든 파일을 찾아서 처리
         def process_file_to_dataframe(file_path):
