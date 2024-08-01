@@ -109,6 +109,27 @@ def setup_about():
         st.write('')
 
     with tab2:
+        code2 = '''
+# 1. 필요한 라이브러리 업로드
+import openai
+
+# 2. 환경변수 설정 (gpt-api key 설정)
+client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "API_KEY 입력"))
+
+# 3. 모델 추론수행
+messages = [
+    {"role": "system", "content": 'You are an AI assistant. You will be given a task. You must generate a detailed and long answer.'},
+    {"role": "user", "content": str(question)}
+    ]
+
+response = client.chat.completions.create(
+    model=selected_option,
+    messages=messages,
+    max_tokens=4096) # 최대 4k 
+
+result = response.choices[0].message.content
+
+'''
         code = '''
 # 1. 필요 개발환경 설치 (Colab, Jupyter)
 !pip install openai
@@ -150,8 +171,10 @@ def gpt_finetuning():
         st.markdown('• Expander 1을 클릭하여 파인튜닝을 수행한 모델이름과 OpenAI API Key를 입력하면 됩니다.')
         st.markdown('• Expander 2를 클릭하여 팀 이름과 모델 타입을 설정하는데, 팀 이름은 최종 모델 평가 과정에서 필요한 사항이니 반드시 입력해주세요 ❗')
         st.markdown('• 추론을 수행하는데 대체로 10분 이상 소요 됩니다 😊 그 시간동안 모델을 활용하여 서비스를 구성해보세요 ')
-        st.markdown('• 추론이 끝나면 아래 다운로드 버튼을 클릭하여, 저장된 Jsonl 파일을 아래 이메일로 보내주시면, 리더보드에 결과가 반영이 됩니다.')
-        st.markdown('모델 제출 이메일 : anstmdwn45@personaai.co.kr')
+        st.markdown('• 추론이 끝나면 아래 다운로드 버튼을 클릭하여, 파인튜닝 된 ChatGpt 모델의 출력결과를 확인할 수 있습니다.')
+        st.markdown('4️⃣ 미세조정된 ChatGPT를 활용하여 추론을 수행하는 방법')
+        st.code(code2, language='python')
+        st.markdown('')
         
         with st.form(key='inference_form_1'):  # 고유한 키 부여
             st.subheader('📋 인퍼런스 결과 생성')
@@ -241,8 +264,8 @@ def gpt_finetuning():
         # 전체 싱글 점수와 멀티 점수의 리스트
         total_single_scores = []
 
-        file_path = './streamlit/전남대-12.jsonl'
-        file_path2 = './streamlit/전남대2-12.jsonl'
+        file_path = '전남대-12.jsonl'
+        file_path2 = '전남대2-12.jsonl'
 
 
         def extract_team_and_number(filename):
