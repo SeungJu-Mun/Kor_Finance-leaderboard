@@ -100,7 +100,7 @@ def setup_about():
         st.markdown('2️⃣ MMLU_F : 금융 관련 도메인을 정확하게 이해하고 있는지, 객관식 형태로 평가하는 벤치마크 입니다.')
         st.markdown('3️⃣ MATHQA : 리스크 관리, 옵션 가격 모델링 등 금융 분야에서 사용되는 수리적 문제를 잘 해결하는지 평가하는 벤치마크 입니다.')
         st.write('')
-        st.markdown('<h5>대회 관련 문의사항</h5>', unsafe_allow_html=True)
+        st.markdown('<h5>관련 문의사항</h5>', unsafe_allow_html=True)
         st.markdown('평가 예시 데이터셋과 Chatgpt 사용 관련 문의 사항이 있으시면 anstmdwn45@personaai.co.kr로 연락주세요 🤩')
         st.markdown('Made with ❤️ by the awesome open-source community from all over 🌍')
         st.write('')
