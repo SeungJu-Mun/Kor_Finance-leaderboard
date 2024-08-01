@@ -59,7 +59,7 @@ def setup_basic():
     st.markdown(
         "🚀 Open-Ko-Finance-LLM 리더보드는 한국어 금융 분야의 전문적인 지식을 대형 언어 모델로 객관적인 평가를 수행합니다.\n"
     )
-    st.markdown( f" 이 리더보드는 [PersonaAI](https://personaai.co.kr/main)와 [전남대학교](https://aicoss.kr/www/)가 공동 주최하며, [PersonaAI](https://personaai.co.kr/main)에서 운영합니다.")
+    st.markdown( f" 이 리더보드는 [(주)페르소나에이아이](https://personaai.co.kr/main)에서 운영합니다.")
 
 def setup_about():
     css = '''
@@ -84,17 +84,16 @@ def setup_about():
 
     tab1, tab2, tab3 = st.tabs(["📖 About", "🚀Submit here!", "🏅 LLM BenchMark"])
     with tab1:
-        st.markdown('<h3>대회 개요</h3>', unsafe_allow_html=True)
+        st.markdown('<h3>주제 개요</h3>', unsafe_allow_html=True)
         st.markdown('최근 인공지능(AI) 기술의 발전은 다양한 산업 분야에 걸쳐 혁신적인 변화를 가져오고 있습니다.')
         st.markdown('특히, 생성형 AI 기술의 도입은 자연어 처리(NLP)와 관련된 애플리케이션 개발에 큰 영향을 미치고 있는데,')
         st.markdown('금융 상담 서비스 분야에서도 AI를 활용한 자동화된 상담 시스템은 비용 절감과 서비스 효율성 향상을 목표로 활발히 연구되고 있습니다.')
-        st.markdown('이러한 배경 속에서 이번 전남대 해커톤 금융 LLM 리더보드를 통해 금융 상담 분야에서 사용자에게 좀 더 높은 정확도와 신뢰성 있는 정보를 전달하기 위해 이번 대회를 개최하게 되었습니다.')
+        st.markdown('이러한 배경 속에서 생성형 AI를 활용한 금융 상담 Chat-Bot 개발을 통해 대규모 언어 모델(LLM) 최적화와 금융 서비스의 사용자 경험을 개선하는 것을 목적으로 합니다.')
         st.write('')
         st.markdown('<h5>평가 방식</h5>', unsafe_allow_html=True)
         st.markdown('📈 우리는 [LogicKor](https://github.com/instructkr/LogicKor) 다분야 사고력 추론 벤치마크를 활용하여 금융 도메인에 LLM 모델을 테스트하는 통합 프레임워크를 통해 모델을 평가합니다. ')
         st.markdown('한국어로 번역한 데이터 세트와 한국어 웹 코퍼스를 수집하여, 3가지 작업(FIQUSA, MMLU_F, MATHQA)를 구축하여 새로운 데이터 세트를 처음부터 준비했습니다.')
         st.markdown('LLM 시대에 걸맞은 평가를 제공하기 위해 해당 벤치마크를 채택하였고, 최종 점수는 각 평가 데이터 세트에서 얻은 평균 점수로 변환됩니다.')
-        st.markdown('평가는 ChatGPT API를 사용합니다.')
         st.write('')
         st.markdown('<h5>평가 기준 설명</h5>', unsafe_allow_html=True)
         st.markdown('1️⃣ FIQUSA : 금융 도메인 뉴스 헤드라인의 감성을 예측하여 시장 동향을 파악하는 벤치마크 입니다.')
@@ -116,35 +115,17 @@ def setup_about():
 # 2. 필요한 라이브러리 업로드
 import openai
 import os
-import pandas as pd
-import json
 
 # 3. 환경변수 설정 (gpt-api key 설정)
 client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "API_KEY 입력"))
 
-# 4. 학습 데이터 전처리
-df = pd.read_csv('파일명.csv') # 데이터 불러오기
-
-# system, user, assistant에 대한 데이터를 준비하여 학습 데이터 구성(Chat-Completion 형식)
-def prepare_example_conversation(row):
-    system_message = "You are a helpful AI assistant. Please answer the user's questions kindly. 당신은 유능한 AI 어시스턴트 입니다. 사용자의 질문에 대해 친절하게 답변해주세요."
-    messages = []
-    messages.append({"role": "system", "content": system_message})
-    messages.append({"role": "user", "content": row['질문 데이터']})
-    messages.append({"role": "assistant", "content": row["답변 데이터"]})
-    return {"messages": messages}
-
-training_data = training_df.apply(prepare_example_conversation, axis=1).tolist()
-
-# 5. openai playground 학습 데이터 업로드
+# 4. openai playground 학습 데이터 업로드
 def data_loader(train_file):
     with open(train_file, 'rb') as train_ft:
         training_response = client.files.create(file = train_ft, purpose='fine-tune')
         train_file_id = training_response.id
-
-data_loader(training_data)
         
-# 6. gpt-3.5-turbo 미세조정
+# 5. gpt-3.5-turbo 미세조정
 def gpt_finetuning():
     response = client.fine_tuning.jobs.create(
         training_file=training_file_id,
@@ -197,7 +178,8 @@ def gpt_finetuning():
                 with st.expander('Expander 2'):
                     selected_option_name = st.text_input(
                         "소속 팀이름을 입력하세요.", 
-                        placeholder='여기에 입력해주세요'
+                        placeholder='소속팀은 반드시 팀이름-제출시간으로 입력해주세요',
+                        help = 'ex) 전남대-15'
                     )
                     selected_option_type = st.selectbox(
                         "모델 타입을 입력하세요.",
@@ -232,7 +214,7 @@ def gpt_finetuning():
                     json_output = df_output.to_json(orient='records', lines=True, force_ascii=False)
                     st.session_state['json_output'] = json_output
                     st.session_state['selected_option_name'] = selected_option_name
-                    upload_to_github(github_token, "NUMCHCOMCH/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.json", json_output)
+                    upload_to_github(git_token, "NUMCHCOMCH/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.json", json_output)
 
         if 'json_output' in st.session_state:
             st.download_button(
@@ -242,14 +224,11 @@ def gpt_finetuning():
                 mime='text/json'
             )
          
-        
-
     with tab3:
         st.markdown('<h5> 👩‍✈️ 전남대 금융 LLM 리더보드 평가 규칙</h5>', unsafe_allow_html=True)
-        st.markdown('1️⃣ 점수 산출은 Public과 Private 점수의 평균으로 산출합니다.')
-        st.markdown('2️⃣ 원활한 서비스 개발을 위해서 Public 모델 제출은 하루 최대 3번까지 가능합니다.')
-        st.markdown('3️⃣ Private 점수의 경우, 대회 종료 5시간 전에 최종 미세조정 모델을 제출한 결과로 산정합니다.')
-        st.markdown('4️⃣ Model 평가는 gpt-4o를 기준으로 평가를 수행합니다.')
+        st.markdown('1️⃣ 점수 산출은 3가지 지표(MMLU_F, FIQUSA, MATHQA) 점수의 평균으로 산출합니다.')
+        st.markdown('2️⃣ MMLU_F와 MATHQA의 경우 금융 도메인 지식과 복잡한 추론이 필요하므로 가산점이 있습니다.😘')
+        st.markdown('3️⃣ 원활한 서비스 개발을 위해서 모델 제출은 하루 최대 2번까지 가능합니다. 단❗마지막날은 원활한 진행을 위해 1번만 가능합니다. ')
 
         # DataFrame 생성
         st.markdown('')
@@ -260,9 +239,17 @@ def gpt_finetuning():
 
         # 전체 싱글 점수와 멀티 점수의 리스트
         total_single_scores = []
-        
-        file_path = './streamlit/전남대-2.jsonl'
-        file_path2 = './streamlit/전남대-1.jsonl'
+
+        file_path = '전남대-12.jsonl'
+        file_path2 = '전남대2-12.jsonl'
+
+
+        def extract_team_and_number(filename):
+            base_name = os.path.splitext(filename)[0]
+            match = re.match(r'(.*?)-(\d+)', base_name)
+            if match:
+                return match.group(1), match.group(2)
+            return base_name, ''
 
         # 지정된 패턴에 맞는 모든 파일을 찾아서 처리
         def process_file_to_dataframe(file_path):
@@ -280,11 +267,21 @@ def gpt_finetuning():
 
             # 카테고리별 평균 점수를 계산하여 데이터프레임 생성
             avg_scores = {category: (sum(scores) / len(scores)) if scores else 0 for category, scores in category_scores.items()}
+
+            # MMLU_F와 MATHQA에 가중치 적용
+            if 'MMLU_F' in avg_scores:
+                avg_scores['MMLU_F'] *= 1.1
+            if 'MATHQA' in avg_scores:
+                avg_scores['MATHQA'] *= 1.1
     
             # 데이터프레임 생성
             df = pd.DataFrame([avg_scores])
-            df['팀이름'] = os.path.splitext(os.path.basename(file_path))[0]
-            df['AVG_Score'] = (df['MMLU_F'] + df['FIQUSA'] + df['MATHQA'])/3
+            
+            # 파일 이름에서 팀 이름과 모델 제출 번호 추출
+            team_name, submission_number = extract_team_and_number(os.path.basename(file_path))
+            df['팀이름'] = team_name
+            df['모델 제출일시'] = submission_number
+            df['AVG_Score'] = ((df['MMLU_F'] + df['FIQUSA'] + df['MATHQA'])/3).round(3)
 
             return df
         
@@ -293,7 +290,7 @@ def gpt_finetuning():
         df = process_file_to_dataframe(file_path)
         df_2 = process_file_to_dataframe(file_path2)
         df = pd.concat([df,df_2]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
-        df['모델 제출일시'] = now = datetime.datetime.now().strftime("%Y-%m-%d %H") + ':00'
+        df['모델 제출일시'] = now = datetime.datetime.now().strftime("%Y.%m.%d") +' '+ df['모델 제출일시'] + ':00'
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         st.dataframe(df,use_container_width=True)
 
