@@ -264,7 +264,7 @@ def gpt_finetuning():
         # 전체 싱글 점수와 멀티 점수의 리스트
         total_single_scores = []
 
-        file_path  = './streamlit/전남대-12'
+        file_path  = './streamlit/전남대-12.jsonl'
         file_path2 = './streamlit/전남대2-12.jsonl'
 
         def extract_team_and_number(filename):
