@@ -266,6 +266,7 @@ def gpt_finetuning():
 
         file_path  = './streamlit/전남대-12.jsonl'
         file_path2 = './streamlit/전남대2-12.jsonl'
+	file_path3 = './streamlit/cpm.json'
 
         def extract_team_and_number(filename):
             base_name = os.path.splitext(filename)[0]
@@ -312,7 +313,9 @@ def gpt_finetuning():
         pd.options.display.float_format = "{:.1f}".format
         df = process_file_to_dataframe(file_path)
         df_2 = process_file_to_dataframe(file_path2)
+	df_3 = process_file_to_dataframe(file_path3)
         df = pd.concat([df,df_2]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+	df = pd.concat([df,df_3]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         df['모델 제출일시'] = now = datetime.datetime.now().strftime("%Y.%m.%d") +' '+ df['모델 제출일시'] + ':00'
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         st.dataframe(df,use_container_width=True)
