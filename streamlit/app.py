@@ -240,13 +240,13 @@ def gpt_finetuning():
                     st.session_state['selected_option_name'] = selected_option_name
                     upload_to_github(github_token, "NUMCHCOMCH/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.jsonl", json_output)
 
-        if 'json_output' in st.session_state:
+        '''if 'json_output' in st.session_state:
             st.download_button(
                 label='추론 결과 다운로드 하기',
                 data=st.session_state['json_output'],
                 file_name=f"{st.session_state['selected_option_name'].replace('/', '_')}.jsonl",
                 mime='text/json'
-            )
+            )'''
          
     with tab3:
         st.markdown('<h5> 👩‍✈️ 전남대 금융 LLM 리더보드 평가 규칙</h5>', unsafe_allow_html=True)
