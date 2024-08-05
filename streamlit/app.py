@@ -213,7 +213,7 @@ def gpt_finetuning():
 
             if st.form_submit_button('추론 시작하기!'):
                 with st.spinner():
-                    df_questions = pd.read_json('FinBench_Final.jsonl', lines=True)
+                    df_questions = pd.read_json('.streamlit/FinBench_train (1).jsonl', lines=True)
                     single_turn_outputs = []
                     for question in df_questions['questions']:
                         messages = [
