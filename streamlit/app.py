@@ -266,8 +266,7 @@ def gpt_finetuning():
 
         file_path = './streamlit/전남대-12.jsonl'
         file_path2 = './streamlit/전남대2-12.jsonl'
-	file_path3 = './streamlit/cpm.json'    
-
+	file_path3 = './streamlit/cpm.json'
 
         def extract_team_and_number(filename):
             base_name = os.path.splitext(filename)[0]
