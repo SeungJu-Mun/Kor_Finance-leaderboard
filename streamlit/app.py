@@ -218,8 +218,7 @@ def gpt_finetuning():
                     for question in df_questions['questions']:
                         messages = [
                             {"role": "system", "content": 'You are an AI assistant. You will be given a task. You must generate a detailed and long answer.'},
-                            {"role": "user", "content": str(question)}
-                        ]
+                            {"role": "user", "content": str(question)}]
                         response = client.chat.completions.create(
                             model=selected_option,
                             messages=messages,
@@ -231,7 +230,7 @@ def gpt_finetuning():
                         'id': df_questions['id'],
                         'category': df_questions['category'],
                         'questions': df_questions['questions'],
-                        'outputs': single_turn_outputs,
+                        'outputs': [single_turn_outputs],
                         'references': df_questions['references']
                     })
 
