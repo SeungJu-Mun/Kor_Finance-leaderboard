@@ -224,7 +224,7 @@ def gpt_finetuning():
                             messages=messages,
                             max_tokens=4096
                         )
-                        single_turn_outputs.append(response.choices[0].message.content)
+                        single_turn_outputs.append([response.choices[0].message.content])
 
                     df_output = pd.DataFrame({
                         'id': df_questions['id'],
