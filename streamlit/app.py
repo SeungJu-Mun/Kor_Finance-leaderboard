@@ -230,7 +230,7 @@ def gpt_finetuning():
                         'id': df_questions['id'],
                         'category': df_questions['category'],
                         'questions': df_questions['questions'],
-                        'outputs': [single_turn_outputs],
+                        'outputs': single_turn_outputs,
                         'references': df_questions['references']
                     })
 
