@@ -9,12 +9,21 @@ import json
 import re
 import glob
 
-title = "🏆 Open-Ko-Finance-LLM-Leaderboard"
+# 페이지 설정
 st.set_page_config(
-    page_title=title,
+    page_title="AICOSS 산학연계 해커톤",
     page_icon="🏆",
     layout="wide",
 )
+
+# 큰 제목
+st.title("AICOSS 산학연계 해커톤")
+
+# 서브제목
+st.subheader("생성형 AI를 활용한 금융 상담 Chat-Bot 개발")
+
+# 추가 서브제목
+st.subheader("Open-Ko-Finance-LLM-Leaderboard")
 
 # Load the API key from Streamlit secrets
 try:
@@ -212,7 +221,7 @@ def gpt_finetuning():
                     )
 
 
-            if st.form_submit_button('추론 시작하기!'):
+            if st.form_submit_button('모델 제출하기!'):
                 with st.spinner():
                     df_questions = pd.read_json('./streamlit/FinBench_test.jsonl', lines=True)
                     single_turn_outputs = []
@@ -249,14 +258,14 @@ def gpt_finetuning():
         #    )
          
     with tab3:
-        st.markdown('<h5> 👩‍✈️ 전남대 금융 LLM 리더보드 평가 규칙</h5>', unsafe_allow_html=True)
+        st.markdown('<h5> 👩‍✈️ 페르소나에이아이 금융 LLM 리더보드 평가 규칙</h5>', unsafe_allow_html=True)
         st.markdown('1️⃣ 점수 산출은 3가지 지표(MMLU_F, FIQUSA, MATHQA) 점수의 평균으로 산출합니다.')
         st.markdown('2️⃣ MMLU_F와 MATHQA의 경우 금융 도메인 지식과 복잡한 추론이 필요하므로 가산점이 있습니다.😘')
         st.markdown('3️⃣ 원활한 서비스 개발을 위해서 모델 제출은 하루 최대 2번까지 가능합니다. 단❗마지막날은 원활한 진행을 위해 1번만 가능합니다. ')
 
         # DataFrame 생성
         st.markdown('')
-        st.subheader('LLM 모델 벤치마크')
+        st.subheader('모델 추론 결과')
         
         # 카테고리별 점수 집계를 위한 딕셔너리
         category_scores = {}
