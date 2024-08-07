@@ -143,25 +143,33 @@ import openai
 import os
 
 # 3. 환경변수 설정 (gpt-api key 설정)
-client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "API_KEY 입력"))
+openai.api_key = os.environ.get("OPENAI_API_KEY", "API_KEY 입력")
 
 # 4. openai playground 학습 데이터 업로드
 def data_loader(train_file):
     with open(train_file, 'rb') as train_ft:
-        training_response = client.files.create(file = train_ft, purpose='fine-tune')
-        train_file_id = training_response.id
-        
+        training_response = openai.File.create(file=train_ft, purpose='fine-tune')
+        return training_response['id']
+
 # 5. gpt-3.5-turbo 미세조정
-def gpt_finetuning():
-    response = client.fine_tuning.jobs.create(
+def gpt_finetuning(training_file_id):
+    response = openai.FineTuningJob.create(
         training_file=training_file_id,
-        model="모델명", # gpt-4-o-mini, gpt-3.5-turbo
+        model="gpt-3.5-turbo",  # 여기서 사용할 모델명을 정확히 지정하세요
         suffix="Finance_팀이름",
         hyperparameters={
-            "n_epochs": 3, # 데이터 반복 횟수 / 주로 3~5로 설정
-	    "batch_size": 3, # 한 번의 학습에 처리 할 데이터 수
-	    "learning_rate_multiplier": 0.3 # 모델의 학습률 : 경사하강법을 통해, 모델이 손실함수를 최소화 할 수 있는 방향을 설정
+            "n_epochs": 3,  # 데이터 반복 횟수 / 주로 3~5로 설정
+            "batch_size": 3,  # 한 번의 학습에 처리할 데이터 수
+            "learning_rate_multiplier": 0.3  # 모델의 학습률: 경사하강법을 통해 모델이 손실함수를 최소화할 수 있는 방향을 설정
         })
+    return response
+
+# 예시 사용법
+train_file = './fine-tuning dataset/finetune_training.jsonl'
+training_file_id = data_loader(train_file)
+finetuning_response = gpt_finetuning(training_file_id)
+
+print(finetuning_response)
         '''
         st.markdown('<h3>Evaluation Queue for the 🚀 Open Ko-LLM Leaderboard</h3>', unsafe_allow_html=True)
         st.markdown('1️⃣ 금융 도메인 샘플 데이터 다운로드')
