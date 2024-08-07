@@ -165,12 +165,13 @@ def gpt_finetuning():
         '''
         st.markdown('<h3>Evaluation Queue for the 🚀 Open Ko-LLM Leaderboard</h3>', unsafe_allow_html=True)
         st.markdown('1️⃣ 샘플 데이터 다운로드')
+        with open('./fine-tuning dataset/finetune_training.jsonl', 'r') as f:
+		file_contents = f.read()
         st.download_button(
-        	label='Download JSONL file',
-        	data='./fine-tuning dataset/finetune_training.jsonl',
-        	file_name='sample.jsonl',
-        	mime='application/json'
-    )
+        	label = 'Download JSONL file',
+        	data = file_contents,
+        	file_name ='sample.jsonl',
+        	mime ='application/json')
         st.markdown('2️⃣ ChatGPT를 활용하여 미세 조정을 수행하는 방법')
         st.code(code, language='python')
         st.markdown('3️⃣ 만약에 데이터 및 모델을 업로드 하였는데, 오류가 발생한다면 다음 사항을 고려해보세요')
