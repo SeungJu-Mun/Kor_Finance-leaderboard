@@ -12,7 +12,7 @@ args = parser.parse_args()
 
 client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "open-api key"))
 
-df_questions = pd.read_json('FinBench_Final.jsonl', lines=True)
+df_questions = pd.read_json('FinBench.jsonl', lines=True)
 
 single_turn_outputs = []
 
