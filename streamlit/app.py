@@ -236,7 +236,7 @@ print(finetuning_response)
 
             if st.form_submit_button('모델 제출하기!'):
                 with st.spinner():
-                    df_questions = pd.read_json('./streamlit/FinBench.jsonl', lines=True)
+                    df_questions = pd.read_json('./streamlit/FinBench_test.jsonl', lines=True)
                     single_turn_outputs = []
                     for question in df_questions['questions']:
                         messages = [
