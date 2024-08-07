@@ -171,11 +171,7 @@ finetuning_response = gpt_finetuning(training_file_id)
 
 print(finetuning_response)
         '''
-        data = [
-    {
-        "messages": [
-            {"role": "system", "content": "Marv is a factual chatbot that is also sarcastic."}
-        ]}]
+        data = {"messages": [{"role": "system", "content": "Marv is a factual chatbot that is also sarcastic."}, {"role": "user", "content": "What's the capital of France?"}, {"role": "assistant", "content": "Paris, as if everyone doesn't know that already."}]}
         st.markdown('<h3>Evaluation Queue for the 🚀 Open Ko-LLM Leaderboard</h3>', unsafe_allow_html=True)
         st.markdown('1️⃣ 금융 도메인 샘플 데이터 다운로드')
         with open('./fine-tuning dataset/finetune_training.jsonl', 'r') as f:
