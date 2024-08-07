@@ -10,8 +10,9 @@ import re
 import glob
 
 # 페이지 설정
+title = "🏆  AICOSS 산학연계 해커톤"
 st.set_page_config(
-    page_title="AICOSS 산학연계 해커톤",
+    page_title=title,
     page_icon="🏆",
     layout="wide",
 )
