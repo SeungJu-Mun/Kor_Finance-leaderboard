@@ -17,12 +17,6 @@ st.set_page_config(
     layout="wide",
 )
 
-# 서브제목
-st.subheader("생성형 AI를 활용한 금융 상담 Chat-Bot 개발")
-
-# 추가 서브제목
-st.subheader("Open-Ko-Finance-LLM-Leaderboard")
-
 # Load the API key from Streamlit secrets
 try:
     github_token = st.secrets['GITHUB_TOKEN']
@@ -63,6 +57,11 @@ def upload_to_github(token, repo, path, content):
 def setup_basic():
     url = 'https://personaai.co.kr/main'
     st.title(title)
+    # 서브제목
+    st.subheader("생성형 AI를 활용한 금융 상담 Chat-Bot 개발")
+
+   # 추가 서브제목
+    st.subheader("Open-Ko-Finance-LLM-Leaderboard")
 
     st.markdown(
         "🚀 Open-Ko-Finance-LLM 리더보드는 한국어 금융 분야의 전문적인 지식을 대형 언어 모델로 객관적인 평가를 수행합니다.\n"
