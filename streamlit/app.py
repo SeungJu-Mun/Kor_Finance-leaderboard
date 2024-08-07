@@ -172,7 +172,7 @@ def gpt_finetuning():
         st.markdown('• 입력 2를 클릭하여 팀 이름과 모델 타입을 설정하는데, 팀 이름은 최종 모델 평가 과정에서 필요한 사항이니 반드시 입력해주세요 ❗')
         st.markdown('• 추론을 수행하는데 대체로 10분 이상 소요 됩니다 😊 그 시간동안 모델을 활용하여 서비스를 구성해보세요 ')
         #st.markdown('• 추론이 끝나면 아래 다운로드 버튼을 클릭하여, 파인튜닝 된 ChatGpt 모델의 출력결과를 확인할 수 있습니다.')
-	st.markdown('4️⃣ 미세조정된 ChatGPT를 활용하여 추론을 수행하는 방법')
+        st.markdown('4️⃣ 미세조정된 ChatGPT를 활용하여 추론을 수행하는 방법')
         st.code(code2, language='python')
         st.markdown('')
 
