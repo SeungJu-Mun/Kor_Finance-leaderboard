@@ -269,7 +269,7 @@ print(finetuning_response)
         #    )
          
     with tab3:
-        st.markdown('<h5> 👩‍✈️ 페르소나에이아이 금융 LLM 리더보드 평가 규칙</h5>', unsafe_allow_html=True)
+        st.markdown('<h5> 👩‍✈️ 금융 LLM 리더보드 평가 규칙</h5>', unsafe_allow_html=True)
         st.markdown('1️⃣ 점수 산출은 3가지 지표(MMLU_F, FIQUSA, MATHQA) 점수의 평균으로 산출합니다.')
         st.markdown('2️⃣ MMLU_F와 MATHQA의 경우 금융 도메인 지식과 복잡한 추론이 필요하므로 가산점이 있습니다.😘')
         st.markdown('3️⃣ 원활한 서비스 개발을 위해서 모델 제출은 하루 최대 2번까지 가능합니다. 단❗마지막날은 원활한 진행을 위해 1번만 가능합니다. ')
