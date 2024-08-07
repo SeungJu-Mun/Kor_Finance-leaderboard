@@ -16,9 +16,6 @@ st.set_page_config(
     layout="wide",
 )
 
-# 큰 제목
-st.title("AICOSS 산학연계 해커톤")
-
 # 서브제목
 st.subheader("생성형 AI를 활용한 금융 상담 Chat-Bot 개발")
 
