@@ -164,11 +164,11 @@ def gpt_finetuning():
         })
         '''
         st.markdown('<h3>Evaluation Queue for the 🚀 Open Ko-LLM Leaderboard</h3>', unsafe_allow_html=True)
-        st.markdown('1️⃣ 샘플 데이터 다운로드')
+        st.markdown('1️⃣ 금융 도메인 샘플 데이터 다운로드')
         with open('./fine-tuning dataset/finetune_training.jsonl', 'r') as f:
              file_contents = f.read()
         st.download_button(
-        	label = 'Download JSONL file',
+        	label = '데이터 다운로드 받기',
         	data = file_contents,
         	file_name ='sample.jsonl',
         	mime ='application/json')
