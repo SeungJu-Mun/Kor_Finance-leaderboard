@@ -229,7 +229,7 @@ print(finetuning_response)
                         help = 'ex) 전남대-15'
                     )
                     selected_option_type = st.text_input(
-                        "모델 타입을 입력하세요.",
+                        "모델 타입",
                         ("🟢 gpt-3.5-turbo")
                     )
 
