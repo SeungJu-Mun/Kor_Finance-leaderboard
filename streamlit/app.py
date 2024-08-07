@@ -171,7 +171,7 @@ finetuning_response = gpt_finetuning(training_file_id)
 
 print(finetuning_response)
         '''
-        data = {"messages": [{"role": "system", "content": "당신은 유능한 AI 어시스턴트 입니다. 사용자의 질문에 대해 친절하게 답변해주세요."}, {"role": "user", "content": "다음 중 재무상태표가 제공할 수 있는 재무정보로 올바르지 않은 것은?\n     1.\t타인자본에 대한 정보\n     2.\t자기자본에 대한 정보\n     3.\t자산총액에 대한 정보\n     4.\t경영성과에 관한 정보\n"}, {"role": "assistant", "content": "재무상태표는 경영성과에 관한 정보를 직접 제공하지 않습니다. 경영성과는 손익계산서(Income Statement)에서 제공되며, 이는 특정 기간 동안의 수익과 비용을 통해 기업의 경영 성과를 평가합니다. 따라서, 재무상태표가 제공할 수 있는 재무 정보로 올바르지 않은 것은: 4. 경영성과에 관한 정보"}]}
+        data = {"messages": [{"role": "system", "content": "당신은 유능한 AI 어시스턴트 입니다. 사용자의 질문에 대해 친절하게 답변해주세요."}, {"role": "user", "content": ""다음 금융 헤드라인의 정서는 무엇인가요? 긍정, 부정, 중립 중 어느 쪽인가요?\n텍스트:미래에셋, '프리미엄 커버드콜 월배당 ETF' 5종 개인 누적 순매수 1조 넘어\n정답:"}, {"role": "assistant", "content": "헤드라인의 정서는 긍정입니다."}]}
         st.markdown('<h3>Evaluation Queue for the 🚀 Open Ko-LLM Leaderboard</h3>', unsafe_allow_html=True)
         st.markdown('1️⃣ 금융 도메인 샘플 데이터 다운로드')
         with open('./fine-tuning dataset/finetune_training.jsonl', 'r') as f:
