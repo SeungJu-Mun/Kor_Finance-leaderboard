@@ -10,7 +10,7 @@ import re
 import glob
 
 # 페이지 설정
-title = "🏆 AICOSS 산학연계 해커톤 - 생성형 AI를 활용한 금융 상담 Chat-Bot 개발"
+title = "AICOSS 산학연계 해커톤 - 생성형 AI를 활용한 금융 상담 Chat-Bot 개발"
 st.set_page_config(
     page_title=title,
     page_icon="🏆",
