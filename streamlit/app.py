@@ -183,7 +183,7 @@ def gpt_finetuning():
             col1, col2 = st.columns([0.54, 0.46])
             
             with col1:
-                with st.expander('Expander 1'):
+                with st.expander('입력 1'):
                     selected_option = st.text_input(
                         "모델 이름을 입력하세요.", 
                         placeholder='여기에 입력해주세요',
@@ -199,7 +199,7 @@ def gpt_finetuning():
                     client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
 
             with col2:
-                with st.expander('Expander 2'):
+                with st.expander('입력 2'):
                     selected_option_name = st.text_input(
                         "소속 팀이름을 입력하세요.", 
                         placeholder='소속팀은 반드시 팀이름-제출시간으로 입력해주세요',
