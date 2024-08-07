@@ -165,7 +165,7 @@ def gpt_finetuning(training_file_id):
     return response
 
 # 예시 사용법
-train_file = './fine-tuning dataset/finetune_training.jsonl'
+train_file = '데이터셋 경로'
 training_file_id = data_loader(train_file)
 finetuning_response = gpt_finetuning(training_file_id)
 
