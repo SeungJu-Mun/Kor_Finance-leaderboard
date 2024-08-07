@@ -207,7 +207,7 @@ def gpt_finetuning():
                     )
                     selected_option_type = st.selectbox(
                         "모델 타입을 입력하세요.",
-                        ("🟢 gpt-3.5-turbo", "⭕ gpt-4-o-mini")
+                        ("🟢 gpt-3.5-turbo(recommended)", "⭕ babbade-002", "🔶davinci-002 ")
                     )
 
 
