@@ -171,6 +171,11 @@ finetuning_response = gpt_finetuning(training_file_id)
 
 print(finetuning_response)
         '''
+        data = [
+    {
+        "messages": [
+            {"role": "system", "content": "Marv is a factual chatbot that is also sarcastic."}
+        ]}]
         st.markdown('<h3>Evaluation Queue for the 🚀 Open Ko-LLM Leaderboard</h3>', unsafe_allow_html=True)
         st.markdown('1️⃣ 금융 도메인 샘플 데이터 다운로드')
         with open('./fine-tuning dataset/finetune_training.jsonl', 'r') as f:
@@ -184,6 +189,7 @@ print(finetuning_response)
         st.code(code, language='python')
         st.markdown('3️⃣ 만약에 데이터 및 모델을 업로드 하였는데, 오류가 발생한다면 다음 사항을 고려해보세요')
         st.markdown('⚠️ gpt model을 파인튜닝 하기위해서는 위에서 정의한 Chat-Completion 데이터 형식을 유지해야합니다.❗')
+        st.json(data)
         st.markdown('⚠️ Fine Tuning을 한 모델 계정의 API를 입력해야 합니다. 그러지 않을경우 제대로 된 평가를 진행할 수 없습니다.❗')
         st.markdown('⚠️ OpenAPI Key를 확인해보세요. 종종 API Key를 잘못 입력한 경우가 있습니다. 🤣')
         st.markdown('')
