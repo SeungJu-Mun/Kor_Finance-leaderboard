@@ -47,11 +47,11 @@ def upload_to_github(token, repo, path, content):
     # 파일을 업데이트하기 위해 PUT 요청을 보냅니다.
     response = requests.put(url, headers=headers, json=data)
     if response.status_code == 201:
-        st.success("추론 완료")
+        st.success("평가 완료")
     elif response.status_code == 200:
         st.success("파일이 성공적으로 업데이트되었습니다")
     else:
-        st.error(f"추론 실패: {response.status_code} - {response.json().get('message', 'Unknown error')}")
+        st.error(f"평가 실패: {response.status_code} - {response.json().get('message', 'Unknown error')}")
         st.error(response.json())  # 추가적으로 전체 응답 내용을 출력하여 디버깅에 도움
 
 def setup_basic():
