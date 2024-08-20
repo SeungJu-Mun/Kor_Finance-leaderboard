@@ -287,8 +287,7 @@ print(finetuning_response)
         total_single_scores = []
 
         file_path1 = './streamlit/Basemodel_20240820124743.jsonl'
-        # file_path2 = './streamlit/judge_20240820_124743.jsonl'
-        # file_path3 = './stramlit/judge_20240820_135800.jsonl'
+        file_path2 = './stramlit/finetuningmodel.jsonl'
 
         def extract_team_and_number(filename):
             base_name = os.path.splitext(filename)[0]
