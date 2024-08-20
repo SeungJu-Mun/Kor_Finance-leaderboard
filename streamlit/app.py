@@ -335,10 +335,7 @@ print(finetuning_response)
         # 소수점 한 자리로 설정
         pd.options.display.float_format = "{:.1f}".format
         df = process_file_to_dataframe(file_path)
-        df_2 = process_file_to_dataframe(file_path2)
-        df_3 = process_file_to_dataframe(file_path3)
-        df_4 = process_file_to_dataframe(file_path4)
-        df = pd.concat([df,df_2,df_3,df_4]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+        df = pd.concat([df]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         df['모델 제출일시'] = now = datetime.datetime.now().strftime("%Y.%m.%d") +' '+ df['모델 제출일시'] + ':00'
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         st.dataframe(df,use_container_width=True)
