@@ -220,7 +220,6 @@ print(finetuning_response)
                         help='sk-xxxxxxxxxxxxxx'
                     )
                     
-                    client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
 
             with col2:
                 with st.expander('입력 2'):
@@ -240,6 +239,8 @@ print(finetuning_response)
                     st.error("모델명을 다시 한번 확인해주세요. gpt-3.5-turbo 모델만 사용가능 합니다")
                 else:
                     with st.spinner():
+                        client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
+                        
                         df_questions = pd.read_json('./streamlit/FinBench.jsonl', lines=True)
                         single_turn_outputs = []
                         for question in df_questions['questions']:
