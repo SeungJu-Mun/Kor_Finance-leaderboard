@@ -291,11 +291,12 @@ print(finetuning_response)
         file_path3 = './streamlit/team-1930.jsonl'
 
         def extract_team_and_number(filename):
-            base_name = os.path.splitext(filename)[0]
-            match = re.match(r'(.*?)-(\d+)', base_name)
-            if match:
-                return match.group(1), match.group(2)
-            return base_name, ''
+            # 예를 들어, 파일명이 'team-1930.jsonl' 일 때,
+            team_name = filename.split('-')[0]
+            submission_number = filename.split('-')[1].split('.')[0]  # '1930' 추출
+            formatted_time = f"{submission_number[:2]}:{submission_number[2:]}"  # '19:30' 형식으로 변경
+            return team_name, formatted_time
+
 
         # 지정된 패턴에 맞는 모든 파일을 찾아서 처리
         def process_file_to_dataframe(file_path):
@@ -338,7 +339,7 @@ print(finetuning_response)
         df3 = process_file_to_dataframe(file_path3)
 
         df = pd.concat([df1,df2,df3]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
-        df['모델 제출일시'] = now = datetime.datetime.now().strftime("%Y.%m.%d") +' '+ df['모델 제출일시'] + ':00'
+        df['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         st.dataframe(df,use_container_width=True)
 
