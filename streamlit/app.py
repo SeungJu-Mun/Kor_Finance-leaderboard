@@ -287,8 +287,8 @@ print(finetuning_response)
         total_single_scores = []
 
         file_path1 = './streamlit/example.jsonl'
-        file_path2 = './streamlit/judge_20240820_124743.jsonl'
-        file_path3 = './stramlit/judge_20240820_135800.jsonl'
+        # file_path2 = './streamlit/judge_20240820_124743.jsonl'
+        # file_path3 = './stramlit/judge_20240820_135800.jsonl'
 
         def extract_team_and_number(filename):
             base_name = os.path.splitext(filename)[0]
@@ -334,10 +334,10 @@ print(finetuning_response)
         # 소수점 한 자리로 설정
         pd.options.display.float_format = "{:.1f}".format
         df1 = process_file_to_dataframe(file_path1)
-        df2 = process_file_to_dataframe(file_path2)
-        df3 = process_file_to_dataframe(file_path3)
+        # df2 = process_file_to_dataframe(file_path2)
+        # df3 = process_file_to_dataframe(file_path3)
 
-        df = pd.concat([df1,df2,df3]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+        df = pd.concat([df1]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         df['모델 제출일시'] = now = datetime.datetime.now().strftime("%Y.%m.%d") +' '+ df['모델 제출일시'] + ':00'
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         st.dataframe(df,use_container_width=True)
