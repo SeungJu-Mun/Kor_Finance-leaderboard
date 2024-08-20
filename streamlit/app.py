@@ -288,15 +288,18 @@ print(finetuning_response)
 
         file_path1 = './streamlit/Baseline_model.jsonl'
         file_path2 = './streamlit/finetuning_model.jsonl'
-        file_path3 = './streamlit/team-1930.jsonl'
+        # file_path3 = './streamlit/team-1930.jsonl'
 
         def extract_team_and_number(filename):
-            # 파일명에서 '-'를 기준으로 분리
-            parts = filename.split('-')
+            # 파일 확장자 제거
+            base_name = os.path.splitext(filename)[0]
+
+            # '-'를 기준으로 팀 이름과 제출 번호 분리
+            parts = base_name.split('-')
             if len(parts) > 1:
                 team_name = parts[0]
-                submission_number = parts[1].split('.')[0]  # 예: '1930' 추출
-                if len(submission_number) == 4:  # '1930' 형식을 확인
+                submission_number = parts[1]  # '1930' 추출
+                if re.match(r'^\d{4}$', submission_number):  # 정확히 4자리 숫자인지 확인
                     formatted_time = f"{submission_number[:2]}:{submission_number[2:]}"  # '19:30' 형식으로 변경
                     return team_name, formatted_time
                 else:
@@ -345,9 +348,9 @@ print(finetuning_response)
         pd.options.display.float_format = "{:.1f}".format
         df1 = process_file_to_dataframe(file_path1)
         df2 = process_file_to_dataframe(file_path2)
-        df3 = process_file_to_dataframe(file_path3)
+        # df3 = process_file_to_dataframe(file_path3)
 
-        df = pd.concat([df1,df2,df3]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+        df = pd.concat([df1,df2]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         df['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         st.dataframe(df,use_container_width=True)
