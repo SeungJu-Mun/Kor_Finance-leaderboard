@@ -286,8 +286,8 @@ print(finetuning_response)
         # 전체 싱글 점수와 멀티 점수의 리스트
         total_single_scores = []
 
-        file_path1 = './streamlit/Baseline-model.jsonl'
-        file_path2 = './streamlit/finetuning-model.jsonl'
+        file_path1 = './streamlit/Baseline_model.jsonl'
+        file_path2 = './streamlit/finetuning_model.jsonl'
         file_path3 = './streamlit/team-1930.jsonl'
 
         def extract_team_and_number(filename):
