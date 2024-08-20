@@ -219,7 +219,10 @@ print(finetuning_response)
                         placeholder='여기에 입력해주세요',
                         help='sk-xxxxxxxxxxxxxx'
                     )
-                    client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
+                    if not selected_option.startswith("ft:gpt-3.5-turbo"):
+                        st.error("모델명을 다시 한번 확인해주세요. gpt-3.5-turbo 모델만 사용가능 합니다")
+                    else:
+                        client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
 
             with col2:
                 with st.expander('입력 2'):
