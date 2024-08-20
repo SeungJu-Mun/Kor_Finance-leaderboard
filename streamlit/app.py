@@ -290,20 +290,20 @@ print(finetuning_response)
         file_path2 = './streamlit/finetuning_model.jsonl'
         file_path3 = './streamlit/team-1930.jsonl'
 
-    def extract_team_and_number(filename):
-        # 파일명에서 '-'를 기준으로 분리
-        parts = filename.split('-')
-        if len(parts) > 1:
-            team_name = parts[0]
-            submission_number = parts[1].split('.')[0]  # 예: '1930' 추출
-            if len(submission_number) == 4:  # '1930' 형식을 확인
-                formatted_time = f"{submission_number[:2]}:{submission_number[2:]}"  # '19:30' 형식으로 변경
-                return team_name, formatted_time
+        def extract_team_and_number(filename):
+            # 파일명에서 '-'를 기준으로 분리
+            parts = filename.split('-')
+            if len(parts) > 1:
+                team_name = parts[0]
+                submission_number = parts[1].split('.')[0]  # 예: '1930' 추출
+                if len(submission_number) == 4:  # '1930' 형식을 확인
+                    formatted_time = f"{submission_number[:2]}:{submission_number[2:]}"  # '19:30' 형식으로 변경
+                    return team_name, formatted_time
+                else:
+                    return team_name, "00:00"  # 숫자 형식이 맞지 않을 경우 "00:00"으로 반환
             else:
-                return team_name, "00:00"  # 숫자 형식이 맞지 않을 경우 "00:00"으로 반환
-        else:
-            # '-'가 없는 경우 "00:00"으로 오류 처리
-            return parts[0], "00:00"
+                # '-'가 없는 경우 "00:00"으로 오류 처리
+                return parts[0], "00:00"
 
 
 
