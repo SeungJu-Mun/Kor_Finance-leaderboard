@@ -225,7 +225,7 @@ print(finetuning_response)
                 with st.expander('입력 2'):
                     selected_option_name = st.text_input(
                         "소속 팀이름을 입력하세요.", 
-                        placeholder='소속팀은 반드시 팀이름-제출시간으로 입력해주세요',
+                        placeholder='팀이름-제출시간으로 입력해주세요 ex)페르소나-11:30',
                         help = 'ex) 전남대-15'
                     )
                     selected_option_type = st.text_input(
