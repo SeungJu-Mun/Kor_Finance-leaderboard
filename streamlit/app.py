@@ -286,7 +286,7 @@ print(finetuning_response)
         # 전체 싱글 점수와 멀티 점수의 리스트
         total_single_scores = []
 
-        file_path1  = './streamlit/example.jsonl'
+        file_path1 = './streamlit/example.jsonl'
         file_path2 = './streamlit/judge_20240820_124743.jsonl'
         file_path3 = './stramlit/judge_20240820_135800.jsonl'
 
