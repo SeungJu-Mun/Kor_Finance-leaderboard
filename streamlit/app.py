@@ -289,6 +289,7 @@ print(finetuning_response)
         file_path  = './streamlit/전남대-12.jsonl'
         file_path2 = './streamlit/전남대2-12.jsonl'
         file_path3 = './streamlit/페르소나-10(1).jsonl'
+        file_path4 = './streamlit/페르소나-0820(test).jsonl'
 
         def extract_team_and_number(filename):
             base_name = os.path.splitext(filename)[0]
