@@ -286,8 +286,9 @@ print(finetuning_response)
         # 전체 싱글 점수와 멀티 점수의 리스트
         total_single_scores = []
 
-        file_path1 = './streamlit/Basemodel.jsonl'
-        file_path2 = './streamlit/finetuningmodel.jsonl'
+        file_path1 = './streamlit/Baseline-model.jsonl'
+        file_path2 = './streamlit/finetuning-model.jsonl'
+        file_path3 = './streamlit/team-1930.jsonl'
 
         def extract_team_and_number(filename):
             base_name = os.path.splitext(filename)[0]
@@ -334,9 +335,9 @@ print(finetuning_response)
         pd.options.display.float_format = "{:.1f}".format
         df1 = process_file_to_dataframe(file_path1)
         df2 = process_file_to_dataframe(file_path2)
-        # df3 = process_file_to_dataframe(file_path3)
+        df3 = process_file_to_dataframe(file_path3)
 
-        df = pd.concat([df1,df2]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+        df = pd.concat([df1,df2,df3]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         df['모델 제출일시'] = now = datetime.datetime.now().strftime("%Y.%m.%d") +' '+ df['모델 제출일시'] + ':00'
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         st.dataframe(df,use_container_width=True)
