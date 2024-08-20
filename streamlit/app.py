@@ -220,6 +220,7 @@ print(finetuning_response)
                         help='sk-xxxxxxxxxxxxxx'
                     )
                     
+                    client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
 
             with col2:
                 with st.expander('입력 2'):
@@ -235,37 +236,32 @@ print(finetuning_response)
 
 
             if st.form_submit_button('모델 제출하기!'):
-                if not selected_option.startswith("ft:gpt-3.5-turbo"):
-                    st.error("모델명을 다시 한번 확인해주세요. gpt-3.5-turbo 모델만 사용가능 합니다")
-                else:
-                    with st.spinner():
-                        client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
-                        
-                        df_questions = pd.read_json('./streamlit/FinBench.jsonl', lines=True)
-                        single_turn_outputs = []
-                        for question in df_questions['questions']:
-                            messages = [
-                                {"role": "system", "content": 'You are an AI assistant. You will be given a task. You must generate a detailed and long answer.'},
-                                {"role": "user", "content": str(question)}]
-                            response = client.chat.completions.create(
-                                model=selected_option,
-                                messages=messages,
-                                max_tokens=4096
-                            )
-                            single_turn_outputs.append([response.choices[0].message.content])
+                with st.spinner():
+                    df_questions = pd.read_json('./streamlit/FinBench.jsonl', lines=True)
+                    single_turn_outputs = []
+                    for question in df_questions['questions']:
+                        messages = [
+                            {"role": "system", "content": 'You are an AI assistant. You will be given a task. You must generate a detailed and long answer.'},
+                            {"role": "user", "content": str(question)}]
+                        response = client.chat.completions.create(
+                            model=selected_option,
+                            messages=messages,
+                            max_tokens=4096
+                        )
+                        single_turn_outputs.append([response.choices[0].message.content])
 
-                        df_output = pd.DataFrame({
-                            'id': df_questions['id'],
-                            'category': df_questions['category'],
-                            'questions': df_questions['questions'],
-                            'outputs': single_turn_outputs,
-                            'references': df_questions['references']
-                        })
+                    df_output = pd.DataFrame({
+                        'id': df_questions['id'],
+                        'category': df_questions['category'],
+                        'questions': df_questions['questions'],
+                        'outputs': single_turn_outputs,
+                        'references': df_questions['references']
+                    })
 
-                        json_output = df_output.to_json(orient='records', lines=True, force_ascii=False)
-                        st.session_state['json_output'] = json_output
-                        st.session_state['selected_option_name'] = selected_option_name
-                        upload_to_github(github_token, "NUMCHCOMCH/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.jsonl", json_output)
+                    json_output = df_output.to_json(orient='records', lines=True, force_ascii=False)
+                    st.session_state['json_output'] = json_output
+                    st.session_state['selected_option_name'] = selected_option_name
+                    upload_to_github(github_token, "NUMCHCOMCH/Kor_Finance-leaderboard", f"./data/{st.session_state['selected_option_name'].replace('/', '_')}.jsonl", json_output)
 
         #if 'json_output' in st.session_state:
         #    st.download_button(
