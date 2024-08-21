@@ -239,7 +239,8 @@ print(finetuning_response)
             submit_button = st.form_submit_button('모델 제출하기!')    
 
             if submit_button:
-                if not selected_option.startswith("ft:gpt-3.5-turbo"):
+                # if not selected_option.startswith("ft:gpt-3.5-turbo"):
+                if "gpt-3.5-turbo" not in selected_option:
                     st.error("모델명을 다시 한번 확인해주세요. gpt-3.5-turbo 모델만 사용가능 합니다")
                 else:
                     with st.spinner():
