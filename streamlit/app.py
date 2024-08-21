@@ -297,7 +297,9 @@ print(finetuning_response)
 
         file_path1 = './streamlit/Baseline_model.jsonl'
         file_path2 = './streamlit/finetuning_model.jsonl'
-        # file_path3 = './streamlit/team-1930.jsonl'
+        file_path3 = './streamlit/AI라이프-0100.jsonl'
+        file_path4 = './streamlit/AI라이프-0200.jsonl'
+
 
         def extract_team_and_number(filename):
             # 파일 확장자 제거
@@ -357,9 +359,10 @@ print(finetuning_response)
         pd.options.display.float_format = "{:.1f}".format
         df1 = process_file_to_dataframe(file_path1)
         df2 = process_file_to_dataframe(file_path2)
-        # df3 = process_file_to_dataframe(file_path3)
+        df3 = process_file_to_dataframe(file_path3)
+        df4 = process_file_to_dataframe(file_path4)
 
-        df = pd.concat([df1,df2]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+        df = pd.concat([df1,df2,df3,df4]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         df['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         st.dataframe(df,use_container_width=True)
