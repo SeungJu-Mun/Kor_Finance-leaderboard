@@ -373,7 +373,9 @@ print(finetuning_response)
         # df8 = process_file_to_dataframe(file_path4)
 
         df = pd.concat([df1,df2,df3,df4,df5,df6,df7]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
-        df['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
+        yesterday =  datetime.datetime.now() - datetime.timedelta(days=1)
+        df['모델 제출일시'] = yesterday.strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
+        # df['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         st.dataframe(df,use_container_width=True)
 
