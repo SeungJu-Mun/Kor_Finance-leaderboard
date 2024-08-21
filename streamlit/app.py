@@ -214,7 +214,7 @@ print(finetuning_response)
                     )
                     api_key = st.text_input(
                         label='OpenAPI Key를 입력하세요.', 
-                        max_chars=100, 
+                        max_chars=200, 
                         type='password',
                         placeholder='여기에 입력해주세요',
                         help='sk-xxxxxxxxxxxxxx'
