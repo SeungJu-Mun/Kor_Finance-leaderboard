@@ -297,8 +297,14 @@ print(finetuning_response)
 
         file_path1 = './streamlit/Baseline_model.jsonl'
         file_path2 = './streamlit/finetuning_model.jsonl'
-        file_path3 = './streamlit/AI라이프-0100.jsonl'
-        file_path4 = './streamlit/AI라이프-0200.jsonl'
+        file_path3 = './streamlit/AI라이프-2100.jsonl'
+        file_path4 = './streamlit/AI라이프-2200.jsonl'
+        file_path5 = './streamlit/이루매-2100.jsonl'
+        file_path6 = './streamlit/이루매-2200.jsonl'
+        file_path7 = './streamlit/펠리컨적사고-2200.jsonl'
+        # file_path8 = './streamlit/AI라이프-2200.jsonl'
+
+
 
 
         def extract_team_and_number(filename):
@@ -361,8 +367,12 @@ print(finetuning_response)
         df2 = process_file_to_dataframe(file_path2)
         df3 = process_file_to_dataframe(file_path3)
         df4 = process_file_to_dataframe(file_path4)
+        df5 = process_file_to_dataframe(file_path4)
+        df6 = process_file_to_dataframe(file_path4)
+        df7 = process_file_to_dataframe(file_path4)
+        # df8 = process_file_to_dataframe(file_path4)
 
-        df = pd.concat([df1,df2,df3,df4]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+        df = pd.concat([df1,df2,df3,df4,df5,df6,df7]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         df['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         st.dataframe(df,use_container_width=True)
