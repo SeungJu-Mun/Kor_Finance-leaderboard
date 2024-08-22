@@ -311,6 +311,7 @@ print(finetuning_response)
         file_path13 = './streamlit/펠리컨적사고-1100.jsonl'
         file_path14 = './streamlit/이루매-1100.jsonl'
         file_path15 = './streamlit/이루매-1300.jsonl'
+        file_path16 = './streamlit/펠리컨적사고-1300.jsonl'
 
 
 
@@ -386,6 +387,7 @@ print(finetuning_response)
         df13 = process_file_to_dataframe(file_path13)
         df14 = process_file_to_dataframe(file_path14)
         df15 = process_file_to_dataframe(file_path15)
+        df16 = process_file_to_dataframe(file_path16)
         # df8 = process_file_to_dataframe(file_path4)
 
         df = pd.concat([df3,df4,df5,df6,df7]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
@@ -393,7 +395,7 @@ print(finetuning_response)
         df['모델 제출일시'] = yesterday.strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
         #df['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
-        data = pd.concat([df8,df9,df10,df11,df12,df13,df14,df15]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+        data = pd.concat([df8,df9,df10,df11,df12,df13,df14,df15,df16]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         data['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + data['모델 제출일시']
         data = data[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         df = pd.concat([df,data]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
