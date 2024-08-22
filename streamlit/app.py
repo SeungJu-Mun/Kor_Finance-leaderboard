@@ -386,6 +386,7 @@ print(finetuning_response)
         data = data[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         df = pd.concat([df,data]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         df.index = df.index + 1
+        df.index.name = '순위'
         st.dataframe(df,use_container_width=True)
 
 def main():
