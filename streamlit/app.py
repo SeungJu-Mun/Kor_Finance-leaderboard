@@ -305,7 +305,7 @@ print(finetuning_response)
         # file_path8 = './streamlit/AI라이프-2200.jsonl'
         file_path8 = './streamlit/이루매-0900.jsonl'
         file_path9 = './streamlit/펠리컨적사고-0900.jsonl'
-        file_path10 = './streamlit/펠리컨적사고-1000.jsonl'
+        file_path10 = './streamlit/이루매-1000.jsonl'
 
 
 
