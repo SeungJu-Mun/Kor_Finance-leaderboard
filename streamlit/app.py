@@ -376,11 +376,15 @@ print(finetuning_response)
         df9 = process_file_to_dataframe(file_path9)
         # df8 = process_file_to_dataframe(file_path4)
 
-        df = pd.concat([df3,df4,df5,df6,df7,df8,df9]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
-        #yesterday =  datetime.datetime.now() - datetime.timedelta(days=1)
-        #df['모델 제출일시'] = yesterday.strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
-        df['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
+        df = pd.concat([df3,df4,df5,df6,df7]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+        yesterday =  datetime.datetime.now() - datetime.timedelta(days=1)
+        df['모델 제출일시'] = yesterday.strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
+        #df['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
+        data = pd.concat([df8,df9]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+        data['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + data['모델 제출일시']
+        data = data[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
+        df = pd.concat([df,data]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         st.dataframe(df,use_container_width=True)
 
 def main():
