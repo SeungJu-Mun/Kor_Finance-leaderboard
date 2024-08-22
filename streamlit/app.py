@@ -303,6 +303,8 @@ print(finetuning_response)
         file_path6 = './streamlit/이루매-2200.jsonl'
         file_path7 = './streamlit/펠리컨적사고-2200.jsonl'
         # file_path8 = './streamlit/AI라이프-2200.jsonl'
+        file_path8 = './streamlit/이루매-0900.jsonl'
+        file_path9 = './streamlit/펠리컨적사고-0900.jsonl'
 
 
 
@@ -370,9 +372,11 @@ print(finetuning_response)
         df5 = process_file_to_dataframe(file_path5)
         df6 = process_file_to_dataframe(file_path6)
         df7 = process_file_to_dataframe(file_path7)
+        df8 = process_file_to_dataframe(file_path8)
+        df9 = process_file_to_dataframe(file_path9)
         # df8 = process_file_to_dataframe(file_path4)
 
-        df = pd.concat([df1,df2,df3,df4,df5,df6,df7]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+        df = pd.concat([df3,df4,df5,df6,df7,df8,df9]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         #yesterday =  datetime.datetime.now() - datetime.timedelta(days=1)
         #df['모델 제출일시'] = yesterday.strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
         df['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
