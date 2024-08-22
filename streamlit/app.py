@@ -319,9 +319,9 @@ print(finetuning_response)
         file_path21 = './streamlit/이루매-1700.jsonl'
         file_path22 = './streamlit/펠리컨적사고-1700.jsonl'
         file_path23 = './streamlit/AI라이프-1700.jsonl'
-
-
-
+        file_path24 = './streamlit/이루매-1900.jsonl'
+        file_path25 = './streamlit/펠리컨적사고-1900.jsonl'
+        file_path26 = './streamlit/AI라이프-1900.jsonl'
 
         def extract_team_and_number(filename):
             # 파일 확장자 제거
@@ -340,8 +340,6 @@ print(finetuning_response)
             else:
                 # '-'가 없는 경우 "00:00"으로 오류 처리
                 return parts[0], "00:00"
-
-
 
         # 지정된 패턴에 맞는 모든 파일을 찾아서 처리
         def process_file_to_dataframe(file_path):
@@ -376,7 +374,9 @@ print(finetuning_response)
             df['AVG_Score'] = ((df['MMLU_F'] + df['FIQUSA'] + df['MATHQA'])/3).round(3)
 
             return df
-        
+                # 지정된 패턴에 맞는 모든 파일을 찾아서 처리
+
+
         # 소수점 한 자리로 설정
         pd.options.display.float_format = "{:.1f}".format
         df1 = process_file_to_dataframe(file_path1)
@@ -402,14 +402,17 @@ print(finetuning_response)
         df21 = process_file_to_dataframe(file_path21)
         df22 = process_file_to_dataframe(file_path22)
         df23 = process_file_to_dataframe(file_path23)
-        # df8 = process_file_to_dataframe(file_path1)
+        df24 = process_file_to_dataframe(file_path24)
+        df25 = process_file_to_dataframe(file_path25)
+        df26 = process_file_to_dataframe(file_path26)
+        # df8 = process_file_to_dataframe(file_path6)
 
         df = pd.concat([df3,df4,df5,df6,df7]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         yesterday =  datetime.datetime.now() - datetime.timedelta(days=1)
         df['모델 제출일시'] = yesterday.strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
         #df['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + df['모델 제출일시']
         df = df[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
-        data = pd.concat([df8,df9,df10,df11,df12,df13,df14,df15,df16,df17,df18,df19,df20,df21,df22,df23]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
+        data = pd.concat([df8,df9,df10,df11,df12,df13,df14,df15,df16,df17,df18,df19,df20,df21,df22,df23,df24,df25,df26]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
         data['모델 제출일시'] = datetime.datetime.now().strftime("%Y.%m.%d") + ' ' + data['모델 제출일시']
         data = data[['팀이름','MMLU_F','FIQUSA','MATHQA','AVG_Score','모델 제출일시']]
         df = pd.concat([df,data]).sort_values('AVG_Score',ascending=False).reset_index(drop=True)
