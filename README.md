@@ -5,7 +5,7 @@
 금융 LLM을 활용한 상담 챗봇 대회에서, 정량적인 평가를 위해 설계한 리더보드 입니다. 🎇
 * 올거나이즈 금융 LLM 리더보드를 참고하여, 웹 사이트의 금융 뉴스 관련 헤드라인만 크롤링하여, FIQUSA를 설계하였습니다.
 * 그리고, 다양한 세무ㆍ회계 자격증 기출문제를 통해 MMLU_F를 설계하였습니다.
-* [LogicKor](https://github.com/instructkr/LogicKor) 리더보드를 토대로, 이와 비슷하게 구축을 해보았습니다.
+* LLM-gudge 형식으로 평가 방식을 구축 해보았습니다.
 
 ## Repository
 본 Repo는 Kor Finance Leaderboard 벤치마크의 추론 및 평가 코드, 데이터셋을 담고 있습니다.
