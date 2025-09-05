@@ -115,7 +115,14 @@ EOF
 if [ -n "$JUDGE_FILE" ] && [ -f "$JUDGE_FILE" ]; then
     echo "\`\`\`" >> "$SUMMARY_FILE"
     cd src/eval
-    python score-single.py -p "../../$JUDGE_FILE" >> "../../$SUMMARY_FILE" 2>&1 || echo "점수 계산 중 오류 발생" >> "../../$SUMMARY_FILE"
+    
+    # uv가 설치되어 있으면 uv run 사용, 아니면 python 직접 사용
+    if command -v uv >/dev/null 2>&1; then
+        uv run python score-single.py -p "../../$JUDGE_FILE" >> "../../$SUMMARY_FILE" 2>&1 || echo "점수 계산 중 오류 발생" >> "../../$SUMMARY_FILE"
+    else
+        python score-single.py -p "../../$JUDGE_FILE" >> "../../$SUMMARY_FILE" 2>&1 || echo "점수 계산 중 오류 발생" >> "../../$SUMMARY_FILE"
+    fi
+    
     cd ../..
     echo "\`\`\`" >> "$SUMMARY_FILE"
 else

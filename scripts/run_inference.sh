@@ -35,9 +35,19 @@ cd src/inference
 
 echo "⏳ 추론 실행 중..."
 export OPENAI_API_KEY="$API_KEY"
-python generator-openai-test.py \
-    --model "$MODEL_NAME" \
-    --model_len "$MAX_TOKENS"
+
+# uv가 설치되어 있으면 uv run 사용, 아니면 python 직접 사용
+if command -v uv >/dev/null 2>&1; then
+    echo "🚀 uv를 사용하여 추론 실행..."
+    uv run python generator-openai-test.py \
+        --model "$MODEL_NAME" \
+        --model_len "$MAX_TOKENS"
+else
+    echo "🐍 python을 사용하여 추론 실행..."
+    python generator-openai-test.py \
+        --model "$MODEL_NAME" \
+        --model_len "$MAX_TOKENS"
+fi
 
 # 결과 파일을 루트 디렉토리로 이동
 OUTPUT_FILE="${MODEL_NAME//\//_}.jsonl"

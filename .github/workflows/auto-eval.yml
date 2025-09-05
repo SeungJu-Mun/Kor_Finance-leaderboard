@@ -84,12 +84,17 @@ jobs:
       - name: Python 환경 설정
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
-          cache: 'pip'
+          python-version: '3.12'
+
+      - name: uv 설치
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
       - name: 의존성 설치
         run: |
-          pip install -r requirements.txt
+          uv sync
 
       - name: 추론 실행
         id: inference
@@ -100,7 +105,7 @@ jobs:
           echo "output_file=$output_file" >> $GITHUB_OUTPUT
           
           echo "🚀 모델 추론 시작: $MODEL_NAME"
-          ./scripts/run_inference.sh "$MODEL_NAME" "$MAX_TOKENS" "$OPENAI_API_KEY"
+          uv run ./scripts/run_inference.sh "$MODEL_NAME" "$MAX_TOKENS" "$OPENAI_API_KEY"
           
           # 결과 파일 검증
           if [[ -f "$output_file" ]]; then
@@ -133,12 +138,17 @@ jobs:
       - name: Python 환경 설정
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
-          cache: 'pip'
+          python-version: '3.12'
+
+      - name: uv 설치
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
       - name: 의존성 설치
         run: |
-          pip install -r requirements.txt
+          uv sync
 
       - name: 추론 결과 다운로드
         uses: actions/download-artifact@v3
@@ -151,7 +161,7 @@ jobs:
         run: |
           output_file="${MODEL_NAME//\//_}.jsonl"
           echo "🔍 모델 평가 시작: $output_file"
-          ./scripts/run_eval.sh "$output_file" "$OPENAI_API_KEY" "$JUDGE_MODEL" "$THREADS"
+          uv run ./scripts/run_eval.sh "$output_file" "$OPENAI_API_KEY" "$JUDGE_MODEL" "$THREADS"
 
       - name: 평가 결과 업로드
         uses: actions/upload-artifact@v3
@@ -204,7 +214,7 @@ jobs:
             if ls judge_*.jsonl 1> /dev/null 2>&1; then
               echo "## 📊 평가 점수" >> $GITHUB_STEP_SUMMARY
               echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-              python src/eval/score-single.py -p judge_*.jsonl >> $GITHUB_STEP_SUMMARY 2>&1 || echo "점수 계산 중 오류 발생" >> $GITHUB_STEP_SUMMARY
+              uv run python src/eval/score-single.py -p judge_*.jsonl >> $GITHUB_STEP_SUMMARY 2>&1 || echo "점수 계산 중 오류 발생" >> $GITHUB_STEP_SUMMARY
               echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
             fi
           else
@@ -226,7 +236,7 @@ jobs:
             // Judge 파일에서 점수 읽기 시도
             try {
               const { execSync } = require('child_process');
-              const scoreOutput = execSync('python src/eval/score-single.py -p judge_*.jsonl', {encoding: 'utf8'});
+              const scoreOutput = execSync('uv run python src/eval/score-single.py -p judge_*.jsonl', {encoding: 'utf8'});
               comment += `## 📊 평가 점수\\n\`\`\`\\n${scoreOutput}\`\`\`\\n`;
             } catch (error) {
               comment += `평가 점수를 읽는 중 오류가 발생했습니다.\\n`;

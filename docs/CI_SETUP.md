@@ -59,7 +59,12 @@ GitHub Actions가 제대로 동작하도록 저장소 권한을 확인합니다:
 
 CI를 GitHub에서 실행하기 전에 로컬에서 전체 파이프라인을 테스트할 수 있습니다:
 
+#### uv 사용 (권장)
 ```bash
+# uv 설치 및 의존성 설치
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync
+
 # 환경변수 설정
 export OPENAI_API_KEY="your-api-key"
 
@@ -69,6 +74,20 @@ export OPENAI_API_KEY="your-api-key"
 # 또는 특정 설정으로 실행
 ./scripts/run_ci_pipeline.sh gpt-3.5-turbo-0125 gpt-4 your-api-key 4096 10
 ```
+
+#### pip 사용 (기존 방식)
+```bash
+# 의존성 설치
+pip install -r requirements.txt
+
+# 환경변수 설정
+export OPENAI_API_KEY="your-api-key"
+
+# 전체 파이프라인 실행
+./scripts/run_ci_pipeline.sh
+```
+
+> 💡 **성능 팁**: `uv`는 `pip`보다 10-100배 빠른 의존성 설치를 제공합니다!
 
 ## 📊 파이프라인 단계
 

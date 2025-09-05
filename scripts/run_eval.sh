@@ -48,11 +48,23 @@ echo ""
 cd src/eval
 
 echo "⏳ Judge 모델로 평가 중..."
-python judgement-single.py \
-    -o "../../$MODEL_OUTPUT" \
-    -k "$API_KEY" \
-    -j "$JUDGE_MODEL" \
-    -t "$THREADS"
+
+# uv가 설치되어 있으면 uv run 사용, 아니면 python 직접 사용
+if command -v uv >/dev/null 2>&1; then
+    echo "🚀 uv를 사용하여 평가 실행..."
+    uv run python judgement-single.py \
+        -o "../../$MODEL_OUTPUT" \
+        -k "$API_KEY" \
+        -j "$JUDGE_MODEL" \
+        -t "$THREADS"
+else
+    echo "🐍 python을 사용하여 평가 실행..."
+    python judgement-single.py \
+        -o "../../$MODEL_OUTPUT" \
+        -k "$API_KEY" \
+        -j "$JUDGE_MODEL" \
+        -t "$THREADS"
+fi
 
 # 생성된 judge 파일 찾기
 JUDGE_FILE=$(ls judge_*.jsonl 2>/dev/null | tail -1)
@@ -66,7 +78,13 @@ echo "📊 평가 완료! Judge 파일: $JUDGE_FILE"
 echo ""
 
 echo "🧮 점수 계산 중..."
-python score-single.py -p "$JUDGE_FILE"
+
+# uv가 설치되어 있으면 uv run 사용, 아니면 python 직접 사용
+if command -v uv >/dev/null 2>&1; then
+    uv run python score-single.py -p "$JUDGE_FILE"
+else
+    python score-single.py -p "$JUDGE_FILE"
+fi
 
 # Judge 파일을 루트 디렉토리로 이동
 mv "$JUDGE_FILE" "../../$JUDGE_FILE"

@@ -10,6 +10,27 @@
 ## Repository
 본 Repo는 Kor Finance Leaderboard 벤치마크의 추론 및 평가 코드, 데이터셋을 담고 있습니다.
 
+## 🛠️ 설치
+
+### Python 환경 및 의존성 설치
+
+#### uv 사용 (권장 ⚡)
+```bash
+# uv 설치 (https://docs.astral.sh/uv/)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# 의존성 설치
+uv sync
+
+# 가상환경 활성화 (선택사항)
+source .venv/bin/activate
+```
+
+#### pip 사용 (기존 방식)
+```bash
+pip install -r requirements.txt
+```
+
 ## 🚀 Quick Start (스크립트 사용)
 
 ### 1. 전체 파이프라인 실행 (권장)
@@ -30,6 +51,8 @@ export OPENAI_API_KEY="your-openai-api-key"
 ./scripts/run_inference.sh
 ./scripts/run_eval.sh gpt-3.5-turbo-0125.jsonl
 ```
+
+> 💡 **참고**: 스크립트들은 `uv`가 설치되어 있으면 자동으로 `uv run`을 사용하고, 없으면 `python`을 직접 사용합니다.
 
 ## 📊 Scripts Options
 
