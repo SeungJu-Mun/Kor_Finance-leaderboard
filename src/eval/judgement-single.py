@@ -30,7 +30,7 @@ client = OpenAI(
 )
 
 df_model_outputs = pd.read_json(args.model_output, lines=True)
-df_judge_template = pd.read_json('judge_template-single.jsonl', lines=True)
+df_judge_template = pd.read_json('../dataset/evaluation_data/judge_template-single.jsonl', lines=True)
 
 lock = Lock()
 

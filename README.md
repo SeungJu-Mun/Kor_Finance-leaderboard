@@ -10,23 +10,35 @@
 ## Repository
 본 Repo는 Kor Finance Leaderboard 벤치마크의 추론 및 평가 코드, 데이터셋을 담고 있습니다.
 
-## Evaluation Example
-Chat gpt 활용, model_len 4096
+## 🚀 Quick Start (스크립트 사용)
 
-### 1. 인퍼런스 결과 생성
+### 1. 전체 파이프라인 실행 (권장)
 ```bash
-python generator-openai-train.py
+# 1단계: 모델 추론 실행
+./scripts/run_inference.sh gpt-3.5-turbo-0125 4096 your-openai-api-key
+
+# 2단계: 평가 실행 (위 단계에서 생성된 파일명 사용)
+./scripts/run_eval.sh gpt-3.5-turbo-0125.jsonl your-openai-api-key gpt-4 30
 ```
 
-### 2. Judge 모델로 평가
-
-#### OpenAI
-
+### 2. 환경변수 사용 (더 편리함)
 ```bash
-python judgement-single.py -o gpt-3.5-turbo-0125.jsonl -k open-api key -t 30
+# API 키를 환경변수로 설정
+export OPENAI_API_KEY="your-openai-api-key"
+
+# 기본 설정으로 실행
+./scripts/run_inference.sh
+./scripts/run_eval.sh gpt-3.5-turbo-0125.jsonl
 ```
-### 3. 결과 확인
 
+## 📊 Scripts Options
+
+### run_inference.sh
 ```bash
-python score-single.py -p 평가결과.jsonl
+./scripts/run_inference.sh [MODEL_NAME] [MAX_TOKENS] [API_KEY]
+```
+
+### run_eval.sh
+```bash
+./scripts/run_eval.sh <MODEL_OUTPUT_FILE> [API_KEY] [JUDGE_MODEL] [THREADS]
 ```
