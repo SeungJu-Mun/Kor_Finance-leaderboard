@@ -1,0 +1,242 @@
+name: 🤖 자동 모델 평가 파이프라인
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/dataset/evaluation_data/**'
+      - 'src/dataset/finetuning_data/**'
+      - 'app/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/dataset/evaluation_data/**'
+      - 'src/dataset/finetuning_data/**'
+  workflow_dispatch:  # 수동 실행 허용
+    inputs:
+      model_name:
+        description: '평가할 모델명'
+        required: false
+        default: 'gpt-3.5-turbo-0125'
+      max_tokens:
+        description: '최대 토큰 수'
+        required: false
+        default: '4096'
+      judge_model:
+        description: 'Judge 모델명'
+        required: false
+        default: 'gpt-4'
+      threads:
+        description: '평가 스레드 수'
+        required: false
+        default: '10'
+
+env:
+  MODEL_NAME: ${{ github.event.inputs.model_name || 'gpt-3.5-turbo-0125' }}
+  MAX_TOKENS: ${{ github.event.inputs.max_tokens || '4096' }}
+  JUDGE_MODEL: ${{ github.event.inputs.judge_model || 'gpt-4' }}
+  THREADS: ${{ github.event.inputs.threads || '10' }}
+
+jobs:
+  detect-changes:
+    name: 🔍 변경사항 감지
+    runs-on: ubuntu-latest
+    outputs:
+      has_data_changes: ${{ steps.changes.outputs.has_data_changes }}
+      changed_files: ${{ steps.changes.outputs.changed_files }}
+    steps:
+      - name: Checkout 코드
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: 변경된 파일 감지
+        id: changes
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "has_data_changes=true" >> $GITHUB_OUTPUT
+            echo "changed_files=manual_trigger" >> $GITHUB_OUTPUT
+          else
+            changed_files=$(git diff --name-only HEAD~1 HEAD | grep -E "(src/dataset/|app/)" || echo "")
+            if [[ -n "$changed_files" ]]; then
+              echo "has_data_changes=true" >> $GITHUB_OUTPUT
+              echo "changed_files=$changed_files" >> $GITHUB_OUTPUT
+            else
+              echo "has_data_changes=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+  inference:
+    name: 🚀 모델 추론
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_data_changes == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      output_file: ${{ steps.inference.outputs.output_file }}
+    
+    steps:
+      - name: Checkout 코드
+        uses: actions/checkout@v4
+
+      - name: Python 환경 설정
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+
+      - name: 의존성 설치
+        run: |
+          pip install -r requirements.txt
+
+      - name: 추론 실행
+        id: inference
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          output_file="${MODEL_NAME//\//_}.jsonl"
+          echo "output_file=$output_file" >> $GITHUB_OUTPUT
+          
+          echo "🚀 모델 추론 시작: $MODEL_NAME"
+          ./scripts/run_inference.sh "$MODEL_NAME" "$MAX_TOKENS" "$OPENAI_API_KEY"
+          
+          # 결과 파일 검증
+          if [[ -f "$output_file" ]]; then
+            echo "✅ 추론 완료: $output_file"
+            lines=$(wc -l < "$output_file")
+            echo "📊 생성된 결과: $lines 줄"
+          else
+            echo "❌ 추론 실패: 출력 파일이 생성되지 않았습니다"
+            exit 1
+          fi
+
+      - name: 추론 결과 업로드
+        uses: actions/upload-artifact@v3
+        with:
+          name: inference-results
+          path: "${{ steps.inference.outputs.output_file }}"
+          retention-days: 7
+
+  evaluation:
+    name: 🔍 모델 평가
+    needs: [detect-changes, inference]
+    if: needs.detect-changes.outputs.has_data_changes == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout 코드
+        uses: actions/checkout@v4
+
+      - name: Python 환경 설정
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+
+      - name: 의존성 설치
+        run: |
+          pip install -r requirements.txt
+
+      - name: 추론 결과 다운로드
+        uses: actions/download-artifact@v3
+        with:
+          name: inference-results
+
+      - name: 평가 실행
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          output_file="${MODEL_NAME//\//_}.jsonl"
+          echo "🔍 모델 평가 시작: $output_file"
+          ./scripts/run_eval.sh "$output_file" "$OPENAI_API_KEY" "$JUDGE_MODEL" "$THREADS"
+
+      - name: 평가 결과 업로드
+        uses: actions/upload-artifact@v3
+        with:
+          name: evaluation-results
+          path: "judge_*.jsonl"
+          retention-days: 30
+
+  report:
+    name: 📊 결과 보고서
+    needs: [detect-changes, inference, evaluation]
+    if: always() && needs.detect-changes.outputs.has_data_changes == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout 코드
+        uses: actions/checkout@v4
+
+      - name: 평가 결과 다운로드
+        if: needs.evaluation.result == 'success'
+        uses: actions/download-artifact@v3
+        with:
+          name: evaluation-results
+
+      - name: 결과 요약 생성
+        run: |
+          echo "# 🏆 한국어 금융 LLM 평가 결과" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📋 실행 정보" >> $GITHUB_STEP_SUMMARY
+          echo "- **모델**: $MODEL_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "- **최대 토큰**: $MAX_TOKENS" >> $GITHUB_STEP_SUMMARY
+          echo "- **Judge 모델**: $JUDGE_MODEL" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 시간**: $(date '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "- **변경된 파일**: ${{ needs.detect-changes.outputs.changed_files }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ needs.inference.result }}" == "success" ]]; then
+            echo "## ✅ 추론 단계" >> $GITHUB_STEP_SUMMARY
+            echo "추론이 성공적으로 완료되었습니다." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## ❌ 추론 단계" >> $GITHUB_STEP_SUMMARY
+            echo "추론 중 오류가 발생했습니다." >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ needs.evaluation.result }}" == "success" ]]; then
+            echo "## ✅ 평가 단계" >> $GITHUB_STEP_SUMMARY
+            echo "평가가 성공적으로 완료되었습니다." >> $GITHUB_STEP_SUMMARY
+            
+            # Judge 파일이 있으면 점수 요약 추가
+            if ls judge_*.jsonl 1> /dev/null 2>&1; then
+              echo "## 📊 평가 점수" >> $GITHUB_STEP_SUMMARY
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+              python src/eval/score-single.py -p judge_*.jsonl >> $GITHUB_STEP_SUMMARY 2>&1 || echo "점수 계산 중 오류 발생" >> $GITHUB_STEP_SUMMARY
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "## ❌ 평가 단계" >> $GITHUB_STEP_SUMMARY
+            echo "평가 중 오류가 발생했습니다." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: PR 코멘트 작성
+        if: github.event_name == 'pull_request' && needs.evaluation.result == 'success'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let comment = `# 🤖 자동 평가 결과\\n\\n`;
+            comment += `**모델**: ${process.env.MODEL_NAME}\\n`;
+            comment += `**Judge 모델**: ${process.env.JUDGE_MODEL}\\n\\n`;
+            
+            // Judge 파일에서 점수 읽기 시도
+            try {
+              const { execSync } = require('child_process');
+              const scoreOutput = execSync('python src/eval/score-single.py -p judge_*.jsonl', {encoding: 'utf8'});
+              comment += `## 📊 평가 점수\\n\`\`\`\\n${scoreOutput}\`\`\`\\n`;
+            } catch (error) {
+              comment += `평가 점수를 읽는 중 오류가 발생했습니다.\\n`;
+            }
+            
+            comment += `\\n> 🔗 [상세 결과 보기](${context.payload.pull_request.html_url}/checks)`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

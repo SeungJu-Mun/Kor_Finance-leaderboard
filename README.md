@@ -42,3 +42,30 @@ export OPENAI_API_KEY="your-openai-api-key"
 ```bash
 ./scripts/run_eval.sh <MODEL_OUTPUT_FILE> [API_KEY] [JUDGE_MODEL] [THREADS]
 ```
+
+### run_ci_pipeline.sh (전체 파이프라인)
+```bash
+./scripts/run_ci_pipeline.sh [MODEL_NAME] [JUDGE_MODEL] [API_KEY] [MAX_TOKENS] [THREADS]
+```
+
+## 🤖 자동화된 CI/CD 파이프라인
+
+이 프로젝트는 GitHub Actions를 통한 **완전 자동화된 평가 파이프라인**을 지원합니다!
+
+### ✨ 자동 실행 조건
+- `src/dataset/` 디렉토리에 새로운 데이터가 추가될 때
+- `app/` 디렉토리의 앱 코드가 수정될 때  
+- Pull Request가 생성될 때
+- 수동으로 워크플로우를 실행할 때
+
+### 🚀 CI 파이프라인 동작
+1. **🔍 변경사항 감지** - 어떤 파일이 변경되었는지 자동 감지
+2. **🚀 모델 추론** - 새로운 데이터에 대해 자동으로 모델 추론 실행
+3. **🔍 모델 평가** - LLM as a Judge를 통한 자동 평가
+4. **📊 결과 보고** - GitHub에 평가 결과 자동 업로드 및 PR 코멘트
+
+### 📋 CI 설정 방법
+1. GitHub 저장소 Settings에서 `OPENAI_API_KEY` Secret 추가
+2. 데이터를 main 브랜치에 푸시하면 자동으로 파이프라인 실행! 
+
+👀 **자세한 설정 방법**: [CI 설정 가이드](docs/CI_SETUP.md) 참조
